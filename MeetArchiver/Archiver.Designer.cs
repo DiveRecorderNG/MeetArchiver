@@ -45,8 +45,10 @@
             matchedList = new ListBox();
             clubsTab = new TabPage();
             uploadTab = new TabPage();
+            button1 = new Button();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
+            splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
             tabControl1.SuspendLayout();
@@ -77,6 +79,10 @@
             splitContainer1.Name = "splitContainer1";
             splitContainer1.Orientation = Orientation.Horizontal;
             // 
+            // splitContainer1.Panel1
+            // 
+            splitContainer1.Panel1.Controls.Add(button1);
+            // 
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(tabControl1);
@@ -103,7 +109,7 @@
             meetTab.Location = new Point(4, 24);
             meetTab.Name = "meetTab";
             meetTab.Padding = new Padding(3);
-            meetTab.Size = new Size(1114, 493);
+            meetTab.Size = new Size(1114, 521);
             meetTab.TabIndex = 0;
             meetTab.Text = "Meet";
             meetTab.UseVisualStyleBackColor = true;
@@ -212,7 +218,7 @@
             // 
             clubsTab.Location = new Point(4, 24);
             clubsTab.Name = "clubsTab";
-            clubsTab.Size = new Size(1114, 493);
+            clubsTab.Size = new Size(1114, 521);
             clubsTab.TabIndex = 2;
             clubsTab.Text = "Clubs";
             clubsTab.UseVisualStyleBackColor = true;
@@ -221,10 +227,20 @@
             // 
             uploadTab.Location = new Point(4, 24);
             uploadTab.Name = "uploadTab";
-            uploadTab.Size = new Size(1114, 493);
+            uploadTab.Size = new Size(1114, 521);
             uploadTab.TabIndex = 3;
             uploadTab.Text = "Upload";
             uploadTab.UseVisualStyleBackColor = true;
+            // 
+            // button1
+            // 
+            button1.Location = new Point(41, 4);
+            button1.Name = "button1";
+            button1.Size = new Size(75, 23);
+            button1.TabIndex = 0;
+            button1.Text = "button1";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
             // 
             // Archiver
             // 
@@ -238,6 +254,7 @@
             Text = "Meet Archiver";
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
+            splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
@@ -268,5 +285,6 @@
         private Label mismatchLbl;
         private Label matchedLbl;
         private Label withdrawnLbl;
+        private Button button1;
     }
 }

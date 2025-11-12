@@ -7,24 +7,24 @@ namespace MeetArchiver
 {
     /// <summary>
     /// Simple non-modal busy form that runs on its own STA thread so the parent thread
-    /// may block/wait without freezing this form.
+    /// may block/wait or perform heavy work without freezing this form.
     /// Usage:
-    ///     CheckingForm.Show("Checking divers...");   // before blocking call
-    ///     ... blocking work ...
-    ///     CheckingForm.Close();                      // after work completes
+    ///     WorkingForm.Show("This may take some time...");
+    ///     ... blocking work on the main thread ...
+    ///     WorkingForm.Close();
     /// </summary>
-    public class CheckingForm : Form
+    public class WorkingForm : Form
     {
         private readonly Label _messageLabel;
         private readonly ProgressBar _progress;
-        private readonly PictureBox _icon;
 
         // single STA thread + form instance
         private static Thread? s_thread;
-        private static CheckingForm? s_instance;
+        private static WorkingForm? s_instance;
         private static readonly object s_lock = new object();
 
-        public CheckingForm(string message)
+        // Private ctor - use static API
+        private WorkingForm(string message)
         {
             StartPosition = FormStartPosition.CenterScreen;
             FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -35,23 +35,14 @@ namespace MeetArchiver
             Width = 420;
             Height = 140;
             BackColor = SystemColors.Window;
-
-            _icon = new PictureBox
-            {
-                Size = new Size(48, 48),
-                Location = new Point(16, 20),
-                SizeMode = PictureBoxSizeMode.CenterImage
-            };
-            // Simple built-in look: draw a spinning glyph using system icon isn't available,
-            // leave PictureBox empty so layout looks balanced.
-            Controls.Add(_icon);
+            TopMost = true;
 
             _messageLabel = new Label
             {
                 AutoSize = false,
-                Location = new Point(80, 10),
-                Size = new Size(320, 50),
-                Text = message ?? "Please wait...",
+                Location = new Point(16 + 48 + 8, 12),
+                Size = new Size(360, 48),
+                Text = message ?? "This may take some time...",
                 Font = new Font(FontFamily.GenericSansSerif, 10f),
                 TextAlign = ContentAlignment.MiddleLeft
             };
@@ -59,26 +50,48 @@ namespace MeetArchiver
 
             _progress = new ProgressBar
             {
-                Location = new Point(80, 70),
-                Size = new Size(320, 18),
+                Location = new Point(16 + 48 + 8, 72),
+                Size = new Size(360, 18),
                 Style = ProgressBarStyle.Marquee,
                 MarqueeAnimationSpeed = 30
             };
             Controls.Add(_progress);
+
+            // Optional icon placeholder to balance layout
+            var icon = new PictureBox
+            {
+                Size = new Size(48, 60),
+                Location = new Point(16, 20),
+                SizeMode = PictureBoxSizeMode.Zoom,
+                Image = Properties.Resources.DiverCheck // fallback to existing resource
+            };
+            Controls.Add(icon);
         }
 
         /// <summary>
         /// Show the busy form on a dedicated STA thread. Safe to call from any thread.
         /// If already visible this updates the message.
         /// </summary>
-        public  void Show(string? message = null)
+        public static void Show(string? message = null)
         {
             lock (s_lock)
             {
                 if (s_instance != null && !s_instance.IsDisposed)
                 {
                     if (!string.IsNullOrEmpty(message))
-                        s_instance.BeginInvoke((Action)(() => s_instance._messageLabel.Text = message));
+                    {
+                        try
+                        {
+                            if (s_instance.IsHandleCreated && !s_instance.IsDisposed)
+                                s_instance.BeginInvoke((Action)(() => s_instance._messageLabel.Text = message));
+                            else
+                                s_instance._messageLabel.Text = message;
+                        }
+                        catch
+                        {
+                            // ignore update failure
+                        }
+                    }
                     return;
                 }
 
@@ -87,14 +100,13 @@ namespace MeetArchiver
                     Application.EnableVisualStyles();
                     Application.SetCompatibleTextRenderingDefault(false);
 
-                    s_instance = new CheckingForm(message ?? "Checking divers against website. This may take some time...");
+                    s_instance = new WorkingForm(message ?? "This may take some time...");
                     try
                     {
                         Application.Run(s_instance);
                     }
                     finally
                     {
-                        // ensure static references cleared when form loop ends
                         lock (s_lock)
                         {
                             s_instance = null;
@@ -120,22 +132,34 @@ namespace MeetArchiver
         /// <summary>
         /// Close the busy form if visible. Safe to call from any thread.
         /// </summary>
-        public void Close()
+        public static void Close()
         {
-            
             lock (s_lock)
             {
                 if (s_instance == null) return;
 
+                var form = s_instance;
                 try
                 {
-                    if (s_instance.IsHandleCreated && !s_instance.IsDisposed)
+                    if (form.IsHandleCreated && !form.IsDisposed)
                     {
-                        s_instance.BeginInvoke((Action)(() =>
+                        // Invoke the real Form.Close on the UI thread.
+                        form.BeginInvoke((Action)(() =>
                         {
-                            try { s_instance.Close(); }
-                            catch { /* swallow */ }
+                            try
+                            {
+                                ((Form)form).Close(); // ensure we call Form.Close, not this static helper
+                            }
+                            catch
+                            {
+                                // swallow
+                            }
                         }));
+                    }
+                    else
+                    {
+                        try { form.Dispose(); }
+                        catch { /* swallow */ }
                     }
                 }
                 catch
@@ -144,7 +168,6 @@ namespace MeetArchiver
                 }
                 finally
                 {
-                    // Wait for thread to exit (short timeout)
                     var t = s_thread;
                     if (t != null && t.IsAlive)
                     {

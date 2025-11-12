@@ -121,12 +121,11 @@ namespace MeetArchiver
             }
             withdrawnLbl.Text = $"Withdrawn Divers ({missingList.Items.Count})";
 
-            var frm = new CheckingForm("Checking divers...");
-            frm.Show();
+            WorkingForm.Show("Validating Divers... Please wait, this can take some time.");
             var t = Diver.CheckAthletesAsync(selectedDivers);
             t.Wait();
             var chekkedDivers = t.Result;
-            frm.Close();
+            WorkingForm.Close();
 
             var validatedDivers = chekkedDivers.Where(ds => ds.Validated).ToList();
             var mismatchedDivers = chekkedDivers.Where(ds => ds.PossibleMatches != null && ds.PossibleMatches.Count() != 0).ToList();
@@ -152,6 +151,12 @@ namespace MeetArchiver
                 newList.Items.Add($"{diver.FullName}       ({diver.Born})");
             }
             newLbl.Text = $"New Divers ({newList.Items.Count})";
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var frm = new DiverMatcher();
+            frm.ShowDialog();
         }
     }
 }
