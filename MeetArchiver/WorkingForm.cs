@@ -51,7 +51,7 @@ namespace MeetArchiver
             _progress = new ProgressBar
             {
                 Location = new Point(16 + 48 + 8, 72),
-                Size = new Size(360, 18),
+                Size = new Size(300, 18),
                 Style = ProgressBarStyle.Marquee,
                 MarqueeAnimationSpeed = 30
             };

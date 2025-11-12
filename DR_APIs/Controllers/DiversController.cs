@@ -112,7 +112,7 @@ namespace DR_APIs.Controllers
                 var matches = GetDiver(divers[i].FirstName, divers[i].LastName, divers[i].Born ?? 0).ToList();
                 if (matches.Count() == 1 && matches[0].Validated)
                 {
-                    int id = divers[0].ID; // copy local ID
+                    int id = divers[i].ID; // copy local ID
                     divers[i] = matches[0];
                     divers[i].ID = id;  // restore local ID
                 }
