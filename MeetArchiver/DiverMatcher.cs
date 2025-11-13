@@ -47,6 +47,8 @@ namespace MeetArchiver
             {
                 matchLst.Items.Add($"{diver.FullName}       ({diver.Born})");
             }
+            if(matchLst.Items.Count > 0)
+                matchLst.SelectedIndex = 0;
         }
 
 
