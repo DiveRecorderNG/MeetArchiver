@@ -57,6 +57,7 @@ namespace DR_APIs.Controllers
                 diver.Representing = row["Representing"].ToString();
                 diver.TCode = row["TCode"].ToString();
                 diver.RecordStatus = RecordStatus.Valid;
+                diver.PossibleMatches = new List<Diver>();
                 divers.Add(diver);
             }
 
@@ -95,6 +96,7 @@ namespace DR_APIs.Controllers
                 diver.Born = Convert.ToInt32(row["Born"]);
                 diver.Representing = row["Representing"].ToString();
                 diver.TCode = row["TCode"].ToString();
+                diver.PossibleMatches = new List<Diver>();
                 divers.Add(diver);
             }
 
@@ -125,6 +127,146 @@ namespace DR_APIs.Controllers
                 {
                     divers[i].RecordStatus = RecordStatus.PossibleMatches;
                     divers[i].PossibleMatches = matches;
+                }
+
+            }
+
+            conn.Close();
+            return divers;
+        }
+
+        /// <summary>
+        /// Update an existing diver record in the me_divers table using ArchiveID (DRef) as the WHERE key.
+        /// Uses parameterized SQL and returns the number of rows affected (0 if no row updated), or -1 on error.
+        /// </summary>
+        [HttpPost("UpdateDiver")]
+        public int UpdateDiver([FromBody] Diver diver)
+        {
+            if (diver == null || !diver.ArchiveID.HasValue) return -1;
+
+            bool needsClosing = false;
+            try
+            {
+                if (conn.State != ConnectionState.Open)
+                {
+                    conn.Open();
+                    needsClosing = true;
+                }
+
+                var sql = @"UPDATE me_divers SET
+                                FirstName = @FirstName,
+                                LastName = @LastName,
+                                Sex = @Sex,
+                                Born = @Born,
+                                Representing = @Representing,
+                                TCode = @TCode,
+                                CoachName = @Coach,
+                                Nation = @Nation
+                            WHERE DRef = @DRef;";
+
+                using var cmd = new MySqlCommand(sql, conn);
+
+                cmd.Parameters.AddWithValue("@FirstName", (object?)diver.FirstName ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@LastName", (object?)diver.LastName ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Sex", (object?)diver.Sex ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Born", diver.Born.HasValue ? (object)diver.Born.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@Representing", (object?)diver.Representing ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@TCode", (object?)diver.TCode ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Coach", (object?)diver.Coach ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Nation", (object?)diver.Nation ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@DRef", diver.ArchiveID.Value);
+
+                int rows = cmd.ExecuteNonQuery();
+                return rows;
+            }
+            catch
+            {
+                return -1;
+            }
+            finally
+            {
+                if (needsClosing && conn.State == ConnectionState.Open)
+                    conn.Close();
+            }
+        }
+
+
+        /// <summary>
+        /// Insert a new diver into the me_divers table using parameterized SQL.
+        /// Returns the primary key (DRef) of the newly created record.
+        /// </summary>
+        [HttpPost("AddDiver")]
+        public int AddDiver([FromBody] Diver diver)
+        {
+            if (diver == null) return -1;
+
+            bool needsClosing = false;
+            try
+            {
+                if (conn.State != ConnectionState.Open)
+                {
+                    conn.Open();
+                    needsClosing = true;
+                }
+
+                // Insert using parameterized query. Columns chosen to match available Diver properties.
+                var sql = @"INSERT INTO me_divers
+                            (FirstName, LastName, Sex, Born, Representing, TCode, Coach, Nation)
+                            VALUES
+                            (@FirstName, @LastName, @Sex, @Born, @Representing, @TCode, @Coach, @Nation);";
+
+                using var cmd = new MySqlCommand(sql, conn);
+
+                // Use DBNull.Value for nulls so DB can accept NULL where allowed.
+                cmd.Parameters.AddWithValue("@FirstName", (object?)diver.FirstName ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@LastName", (object?)diver.LastName ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Sex", (object?)diver.Sex ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Born", diver.Born.HasValue ? (object)diver.Born.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@Representing", (object?)diver.Representing ?? "");
+                cmd.Parameters.AddWithValue("@TCode", (object?)diver.TCode ?? "");
+                cmd.Parameters.AddWithValue("@Coach", (object?)diver.Coach ?? "");
+                cmd.Parameters.AddWithValue("@Nation", (object?)diver.Nation ?? "");
+
+                cmd.ExecuteNonQuery();
+
+                // MySqlCommand exposes LastInsertedId after ExecuteNonQuery
+                var lastId = Convert.ToInt32(cmd.LastInsertedId);
+
+                // Optionally set ArchiveID on returned object (not required)
+                diver.ArchiveID = lastId;
+
+                return lastId;
+            }
+            catch (Exception ex)
+            {
+                // log or handle as appropriate; returning 500 with message for simplicity
+                return -1;
+            }
+            finally
+            {
+                if (needsClosing && conn.State == ConnectionState.Open)
+                    conn.Close();
+            }
+        }
+
+        [HttpPost("ProcessDivers")]
+        public IEnumerable<Diver> ProcessDivers(List<Diver> divers)
+        {
+            conn.Open();
+            for (int i = 0; i < divers.Count(); i++)
+            {
+                if(divers[i].RecordStatus == RecordStatus.Valid)
+                    continue;
+                if (divers[i].RecordStatus == RecordStatus.New)
+                {
+                    var diverId = AddDiver(divers[i]);
+                    divers[i].ArchiveID = diverId;
+                    divers[i].RecordStatus = RecordStatus.Valid;
+                }
+                else if (divers[i].RecordStatus == RecordStatus.Updated)
+                {
+                    var rows = UpdateDiver(divers[i]);
+                    divers[i].RecordStatus = RecordStatus.Valid;
                 }
 
             }

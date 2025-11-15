@@ -53,9 +53,10 @@
             button1 = new Button();
             mismatchedClubsLst = new ListBox();
             label1 = new Label();
-            uploadTab = new TabPage();
             groupBox1 = new GroupBox();
             groupBox2 = new GroupBox();
+            uploadTab = new TabPage();
+            button2 = new Button();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel2.SuspendLayout();
@@ -64,6 +65,7 @@
             meetTab.SuspendLayout();
             diversTab.SuspendLayout();
             clubsTab.SuspendLayout();
+            uploadTab.SuspendLayout();
             SuspendLayout();
             // 
             // menuStrip1
@@ -325,15 +327,6 @@
             label1.TabIndex = 0;
             label1.Text = "Clubs not found";
             // 
-            // uploadTab
-            // 
-            uploadTab.Location = new Point(4, 24);
-            uploadTab.Name = "uploadTab";
-            uploadTab.Size = new Size(1114, 521);
-            uploadTab.TabIndex = 3;
-            uploadTab.Text = "Upload";
-            uploadTab.UseVisualStyleBackColor = true;
-            // 
             // groupBox1
             // 
             groupBox1.Location = new Point(316, 225);
@@ -351,6 +344,26 @@
             groupBox2.TabIndex = 13;
             groupBox2.TabStop = false;
             groupBox2.Text = "Suggested clubs";
+            // 
+            // uploadTab
+            // 
+            uploadTab.Controls.Add(button2);
+            uploadTab.Location = new Point(4, 24);
+            uploadTab.Name = "uploadTab";
+            uploadTab.Size = new Size(1114, 521);
+            uploadTab.TabIndex = 3;
+            uploadTab.Text = "Upload";
+            uploadTab.UseVisualStyleBackColor = true;
+            // 
+            // button2
+            // 
+            button2.Location = new Point(32, 26);
+            button2.Name = "button2";
+            button2.Size = new Size(75, 23);
+            button2.TabIndex = 0;
+            button2.Text = "button2";
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
             // 
             // Archiver
             // 
@@ -373,6 +386,7 @@
             diversTab.PerformLayout();
             clubsTab.ResumeLayout(false);
             clubsTab.PerformLayout();
+            uploadTab.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -407,5 +421,6 @@
         private TextBox searchTxt;
         private GroupBox groupBox1;
         private GroupBox groupBox2;
+        private Button button2;
     }
 }

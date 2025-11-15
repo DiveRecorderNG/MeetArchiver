@@ -56,8 +56,8 @@ namespace DR_APIs.Controllers
             return clubs;
         }
 
-        [HttpGet("MatchClub")]
-        public IEnumerable<Club> MatchClub(string representing, string tcode)
+        [HttpGet("CheckClub")]
+        public IEnumerable<Club> CheckClub(string representing, string tcode)
         {
             bool needsClosing = false;
             if (conn.State != ConnectionState.Open)
@@ -99,7 +99,7 @@ namespace DR_APIs.Controllers
             for (int i = 0; i < clubs.Count(); i++)
             {
 
-                var matches = MatchClub(clubs[i].Representing, clubs[i].TCode).ToList();
+                var matches = CheckClub(clubs[i].Representing, clubs[i].TCode).ToList();
                 if(matches.Count() == 1)
                 {
                     clubs[i].Validated = true;

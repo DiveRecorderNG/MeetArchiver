@@ -188,5 +188,39 @@ namespace DR_APIs.Models
             var result = System.Text.Json.JsonSerializer.Deserialize<List<Diver>>(responseJson, jsonOptions);
             return result ?? new List<Diver>();
         }
+
+        public static async Task<List<Diver>> ProcessDiversAsync(List<Diver> divers, System.Threading.CancellationToken cancellationToken = default)
+        {
+            var httpClientHandler = new HttpClientHandler();
+            httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) =>
+            {
+                return true;
+            };
+
+            if (divers is null) throw new ArgumentNullException(nameof(divers));
+
+            // Base URL can be overridden by setting environment variable API_BASE_URL, otherwise fallback to localhost.
+            var baseUrl = System.Environment.GetEnvironmentVariable("API_BASE_URL") ?? "https://localhost:7034";
+            var requestUri = $"{baseUrl.TrimEnd('/')}/Divers/ProcessDivers";
+
+            var jsonOptions = new System.Text.Json.JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            var json = System.Text.Json.JsonSerializer.Serialize(divers, jsonOptions);
+
+            using var client = new System.Net.Http.HttpClient(httpClientHandler);
+            using var content = new System.Net.Http.StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+            using var response = await client.PostAsync(requestUri, content, cancellationToken).ConfigureAwait(false);
+            //response.EnsureSuccessStatusCode();
+
+            var responseJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            if (string.IsNullOrWhiteSpace(responseJson)) return new List<Diver>();
+
+            var result = System.Text.Json.JsonSerializer.Deserialize<List<Diver>>(responseJson, jsonOptions);
+            return result ?? new List<Diver>();
+        }
     }
 }

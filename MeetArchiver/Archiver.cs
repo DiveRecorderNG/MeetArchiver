@@ -248,7 +248,7 @@ namespace MeetArchiver
 
         private void acceptSuggestionBtn_Click(object sender, EventArgs e)
         {
-            if(sugestedClubLst.SelectedIndex == -1)
+            if (sugestedClubLst.SelectedIndex == -1)
             {
                 MessageBox.Show("Please select a suggested club first.");
                 return;
@@ -286,6 +286,13 @@ namespace MeetArchiver
                 // on the list of invalid clubs so leave it all as it is and updates/new will happes as they shold
 
             }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            var t = Diver.ProcessDiversAsync(checkedDivers);
+            t.Wait();
+            var d = t.Result;
         }
     }
 }
