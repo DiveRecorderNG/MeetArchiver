@@ -1,5 +1,10 @@
 ﻿using Microsoft.VisualBasic.FileIO;
 using System.Globalization;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DR_APIs.Models
 {
@@ -14,7 +19,7 @@ namespace DR_APIs.Models
         public int Attempt { get; set; }
         public int StartOrder { get; set; }
 
-        public string? DiveNo { get; set; }
+        public int? DiveNo { get; set; }
         public string? Position { get; set; }
         public int? Board { get; set; }
 
@@ -48,19 +53,19 @@ namespace DR_APIs.Models
         public decimal? Predict { get; set; }
         public bool? Guest { get; set; }
 
-        public int? Place { get; set; }
+        public string? Place { get; set; }
         public int? EPRef { get; set; }
         public decimal? Penalty { get; set; }
         public int? PlaceOrder { get; set; }
 
-        public decimal? PSFPlace { get; set; }
+        public string? PSFPlace { get; set; }
 
-        public int? P1 { get; set; }
-        public int? P2 { get; set; }
-        public int? P3 { get; set; }
-        public int? P4 { get; set; }
-        public int? P5 { get; set; }
-        public int? P6 { get; set; }
+        public string? P1 { get; set; }
+        public string? P2 { get; set; }
+        public string? P3 { get; set; }
+        public string? P4 { get; set; }
+        public string? P5 { get; set; }
+        public string? P6 { get; set; }
 
         /// <summary>
         /// Parse a CSV file (with header) into a list of <see cref="DiveSheet"/>.
@@ -117,7 +122,7 @@ namespace DR_APIs.Models
                     Attempt = ParseInt(GetField("Attempt")),
                     StartOrder = ParseInt(GetField("StartOrder")),
 
-                    DiveNo = NullIfEmpty(GetField("DiveNo")),
+                    DiveNo = ParseInt(GetField("DiveNo")),
                     Position = NullIfEmpty(GetField("Position")),
                     Board = ParseNullableInt(GetField("Board")),
 
@@ -151,19 +156,19 @@ namespace DR_APIs.Models
                     Predict = ParseNullableDecimal(GetField("Predict")),
                     Guest = ParseNullableBool(GetField("Guest")),
 
-                    Place = ParseNullableInt(GetField("Place")),
+                    Place = NullIfEmpty(GetField("Place")),
                     EPRef = ParseNullableInt(GetField("EPRef")),
                     Penalty = ParseNullableDecimal(GetField("Penalty")),
                     PlaceOrder = ParseNullableInt(GetField("PlaceOrder")),
 
-                    PSFPlace = ParseNullableDecimal(GetField("PSFPlace")),
+                    PSFPlace = NullIfEmpty(GetField("PSFPlace")),
 
-                    P1 = ParseNullableInt(GetField("P1")),
-                    P2 = ParseNullableInt(GetField("P2")),
-                    P3 = ParseNullableInt(GetField("P3")),
-                    P4 = ParseNullableInt(GetField("P4")),
-                    P5 = ParseNullableInt(GetField("P5")),
-                    P6 = ParseNullableInt(GetField("P6"))
+                    P1 = NullIfEmpty(GetField("P1")),
+                    P2 = NullIfEmpty(GetField("P2")),
+                    P3 = NullIfEmpty(GetField("P3")),
+                    P4 = NullIfEmpty(GetField("P4")),
+                    P5 = NullIfEmpty(GetField("P5")),
+                    P6 = NullIfEmpty(GetField("P6"))
                 };
 
                 list.Add(d);
@@ -207,6 +212,61 @@ namespace DR_APIs.Models
             if (string.Equals(raw, "true", StringComparison.OrdinalIgnoreCase)) return true;
             if (string.Equals(raw, "false", StringComparison.OrdinalIgnoreCase)) return false;
             return null;
+        }
+
+        /// <summary>
+        /// Call the API endpoint /DiveSheet/AddDiveSheet to insert a single divesheet row.
+        /// Returns the last-inserted id on success, or -1 on error/empty response.
+        /// </summary>
+        public static async Task<int> AddDiveSheetAsync(DiveSheet ds, CancellationToken cancellationToken = default)
+        {
+            if (ds is null) throw new ArgumentNullException(nameof(ds));
+
+            var handler = new HttpClientHandler();
+            handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+
+            var baseUrl = Environment.GetEnvironmentVariable("API_BASE_URL") ?? "https://localhost:7034";
+            var requestUri = $"{baseUrl.TrimEnd('/')}/DiveSheet/AddDiveSheet";
+
+            var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var json = JsonSerializer.Serialize(ds, jsonOptions);
+
+            using var client = new HttpClient(handler);
+            using var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            using var response = await client.PostAsync(requestUri, content, cancellationToken).ConfigureAwait(false);
+
+            var responseJson = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+            if (string.IsNullOrWhiteSpace(responseJson)) return -1;
+
+            try
+            {
+                var id = JsonSerializer.Deserialize<int>(responseJson, jsonOptions);
+                return id;
+            }
+            catch
+            {
+                if (int.TryParse(responseJson.Trim().Trim('"'), out var parsed)) return parsed;
+            }
+
+            return -1;
+        }
+
+        /// <summary>
+        /// Insert multiple divesheets by calling the AddDiveSheet endpoint for each item.
+        /// Returns a list of inserted ids (same order). Failed inserts return -1 in-place.
+        /// </summary>
+        public static async Task<List<int>> AddDiveSheetsAsync(IEnumerable<DiveSheet> dives, CancellationToken cancellationToken = default)
+        {
+            if (dives is null) throw new ArgumentNullException(nameof(dives));
+
+            var results = new List<int>();
+            foreach (var ds in dives)
+            {
+                var id = await AddDiveSheetAsync(ds, cancellationToken).ConfigureAwait(false);
+                results.Add(id);
+            }
+            return results;
         }
     }
 }

@@ -21,6 +21,29 @@ namespace DR_APIs.Controllers
             conn.ConnectionString = ConnectionString;
         }
 
+
+        [HttpPost("AddDiveSheets")]
+        public bool AddDiveSheets(List<DiveSheet> sheets)
+        {
+            try
+            {
+                conn.Open();
+                for (int i = 0; i < sheets.Count(); i++)
+                {
+                    AddDiveSheet(sheets[i]);
+
+                }
+
+                conn.Close();
+                return true;
+            }
+            catch (Exception)
+            {
+                if (conn.State == ConnectionState.Open)
+                    conn.Close();
+                return false;
+            }
+        }
         /// <summary>
         /// Insert a divesheet row. Returns LastInsertedId or -1 on error.
         /// </summary>
@@ -73,17 +96,17 @@ VALUES
                 cmd.Parameters.AddWithValue("@Board", ds.Board.HasValue ? (object)ds.Board.Value : DBNull.Value);
                 cmd.Parameters.AddWithValue("@Tariff", ds.Tariff.HasValue ? (object)ds.Tariff.Value : DBNull.Value);
 
-                cmd.Parameters.AddWithValue("@J1", ds.J1.HasValue ? (object)ds.J1.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@J2", ds.J2.HasValue ? (object)ds.J2.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@J3", ds.J3.HasValue ? (object)ds.J3.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@J4", ds.J4.HasValue ? (object)ds.J4.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@J5", ds.J5.HasValue ? (object)ds.J5.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@J6", ds.J6.HasValue ? (object)ds.J6.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@J7", ds.J7.HasValue ? (object)ds.J7.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@J8", ds.J8.HasValue ? (object)ds.J8.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@J9", ds.J9.HasValue ? (object)ds.J9.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@J10", ds.J10.HasValue ? (object)ds.J10.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@J11", ds.J11.HasValue ? (object)ds.J11.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@J1", ds.J1.HasValue ? (object)ds.J1.Value : 0);
+                cmd.Parameters.AddWithValue("@J2", ds.J2.HasValue ? (object)ds.J2.Value : 0);
+                cmd.Parameters.AddWithValue("@J3", ds.J3.HasValue ? (object)ds.J3.Value : 0);
+                cmd.Parameters.AddWithValue("@J4", ds.J4.HasValue ? (object)ds.J4.Value : 0);
+                cmd.Parameters.AddWithValue("@J5", ds.J5.HasValue ? (object)ds.J5.Value : 0);
+                cmd.Parameters.AddWithValue("@J6", ds.J6.HasValue ? (object)ds.J6.Value : 0);
+                cmd.Parameters.AddWithValue("@J7", ds.J7.HasValue ? (object)ds.J7.Value : 0);
+                cmd.Parameters.AddWithValue("@J8", ds.J8.HasValue ? (object)ds.J8.Value : 0);
+                cmd.Parameters.AddWithValue("@J9", ds.J9.HasValue ? (object)ds.J9.Value : 0);
+                cmd.Parameters.AddWithValue("@J10", ds.J10.HasValue ? (object)ds.J10.Value : 0);
+                cmd.Parameters.AddWithValue("@J11", ds.J11.HasValue ? (object)ds.J11.Value : 0);
 
                 cmd.Parameters.AddWithValue("@JTot", ds.JTot.HasValue ? (object)ds.JTot.Value : DBNull.Value);
                 cmd.Parameters.AddWithValue("@Points", ds.Points.HasValue ? (object)ds.Points.Value : DBNull.Value);
@@ -101,18 +124,18 @@ VALUES
                 cmd.Parameters.AddWithValue("@Predict", ds.Predict.HasValue ? (object)ds.Predict.Value : DBNull.Value);
                 cmd.Parameters.AddWithValue("@Guest", ds.Guest.HasValue ? (ds.Guest.Value ? 1 : 0) : DBNull.Value);
 
-                cmd.Parameters.AddWithValue("@Place", ds.Place.HasValue ? (object)ds.Place.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@Place", ds.Place);
                 cmd.Parameters.AddWithValue("@EPRef", ds.EPRef.HasValue ? (object)ds.EPRef.Value : DBNull.Value);
                 cmd.Parameters.AddWithValue("@Penalty", ds.Penalty.HasValue ? (object)ds.Penalty.Value : DBNull.Value);
                 cmd.Parameters.AddWithValue("@PlaceOrder", ds.PlaceOrder.HasValue ? (object)ds.PlaceOrder.Value : DBNull.Value);
 
-                cmd.Parameters.AddWithValue("@PSFPlace", ds.PSFPlace.HasValue ? (object)ds.PSFPlace.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@P1", ds.P1.HasValue ? (object)ds.P1.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@P2", ds.P2.HasValue ? (object)ds.P2.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@P3", ds.P3.HasValue ? (object)ds.P3.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@P4", ds.P4.HasValue ? (object)ds.P4.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@P5", ds.P5.HasValue ? (object)ds.P5.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@P6", ds.P6.HasValue ? (object)ds.P6.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@PSFPlace", ds.PSFPlace);
+                cmd.Parameters.AddWithValue("@P1", ds.P1);
+                cmd.Parameters.AddWithValue("@P2", ds.P2);
+                cmd.Parameters.AddWithValue("@P3", ds.P3);
+                cmd.Parameters.AddWithValue("@P4", ds.P4);
+                cmd.Parameters.AddWithValue("@P5", ds.P5);
+                cmd.Parameters.AddWithValue("@P6", ds.P6);
 
                 cmd.ExecuteNonQuery();
 
@@ -228,7 +251,7 @@ VALUES
                 d.StartOrder = Convert.ToInt32(row["StartOrder"]);
 
             if (row.Table.Columns.Contains("DiveNo") && row["DiveNo"] != DBNull.Value)
-                d.DiveNo = row["DiveNo"].ToString();
+                d.DiveNo = Convert.ToInt32(row["DiveNo"].ToString());
 
             if (row.Table.Columns.Contains("Position") && row["Position"] != DBNull.Value)
                 d.Position = row["Position"].ToString();
@@ -265,19 +288,19 @@ VALUES
             d.Predict = TryGetDecimal(row, "Predict");
             d.Guest = TryGetBool(row, "Guest");
 
-            d.Place = TryGetInt(row, "Place");
+            d.Place = row["Place"].ToString();
             d.EPRef = TryGetInt(row, "EPRef");
             d.Penalty = TryGetDecimal(row, "Penalty");
             d.PlaceOrder = TryGetInt(row, "PlaceOrder");
 
-            d.PSFPlace = TryGetDecimal(row, "PSFPlace");
+            d.PSFPlace = row["PSFPlace"].ToString();
 
-            d.P1 = TryGetInt(row, "P1");
-            d.P2 = TryGetInt(row, "P2");
-            d.P3 = TryGetInt(row, "P3");
-            d.P4 = TryGetInt(row, "P4");
-            d.P5 = TryGetInt(row, "P5");
-            d.P6 = TryGetInt(row, "P6");
+            d.P1 = row["P1"].ToString();
+            d.P2 = row["P2"].ToString();
+            d.P3 = row["P3"].ToString();
+            d.P4 = row["P4"].ToString();
+            d.P5 = row["P5"].ToString();
+            d.P6 = row["P6"].ToString();
 
             return d;
         }

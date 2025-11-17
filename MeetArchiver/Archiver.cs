@@ -404,7 +404,13 @@ namespace MeetArchiver
             var t6 = Event.AddEventsAsync(selectedEvents);
             t6.Wait();
             var eventRet = t6.Result;
+            logTxtBox.AppendText($"Events archived succesfully\n");
 
+            var t7 = DiveSheet.AddDiveSheetsAsync(selectedDiveSheets);
+            t7.Wait();
+            var diveRet = t7.Result;
+            logTxtBox.AppendText($"DiveSheets archived succesfully\n");
+            logTxtBox.AppendText("Meet archiving complete!\n");
 
 
         }
