@@ -399,19 +399,39 @@ namespace MeetArchiver
             {
                 ds.Meet = newMeetRef; // should be the same but just to be sure
             }
-            logTxtBox.AppendText($"Events and DiveSheets updated with new MeetRef\n");
+            logTxtBox.AppendText($"Events and DiveSheets updated with new MeetRef\n");// build lookup of ID -> ArchiveID (only those with ArchiveID)
+
+
+            // replace diver IDs with server version
+            logTxtBox.AppendText($"Updating Diveshets from local IDs to global ones\n");
+            var idToArchive = checkedDivers
+                .Where(d => d.ArchiveID.HasValue)
+                .ToDictionary(d => d.ID, d => d.ArchiveID!.Value);
+
+            // replace DiverA where a mapping exists
+            foreach (var ds in diveSheets)
+            {
+                if (idToArchive.TryGetValue(ds.DiverA, out var archiveId))
+                    ds.DiverA = archiveId;
+                if (idToArchive.TryGetValue(ds.DiverB, out var archiveId2))
+                    ds.DiverB = archiveId2;
+            }
+
+            logTxtBox.AppendText("All identifiers updated, begining archive process\n");
+
 
             var t6 = Event.AddEventsAsync(selectedEvents);
             t6.Wait();
             var eventRet = t6.Result;
             logTxtBox.AppendText($"Events archived succesfully\n");
 
+            WorkingForm.Show("Adding dive results . . . this can take a while!");
             var t7 = DiveSheet.AddDiveSheetsAsync(selectedDiveSheets);
             t7.Wait();
             var diveRet = t7.Result;
             logTxtBox.AppendText($"DiveSheets archived succesfully\n");
             logTxtBox.AppendText("Meet archiving complete!\n");
-
+            WorkingForm.Close();
 
         }
 

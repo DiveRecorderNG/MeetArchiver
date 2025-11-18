@@ -13,7 +13,7 @@ namespace DR_APIs.Models
         public int Meet { get; set; }
         public int Event { get; set; }
         public int DiverA { get; set; }
-        public int? DiverB { get; set; }
+        public int DiverB { get; set; }
 
         public int Round { get; set; }
         public int Attempt { get; set; }
@@ -116,7 +116,7 @@ namespace DR_APIs.Models
                     Meet = ParseInt(GetField("Meet")),
                     Event = ParseInt(GetField("Event")),
                     DiverA = ParseInt(GetField("DiverA")),
-                    DiverB = ParseNullableInt(GetField("DiverB")),
+                    DiverB = ParseInt(GetField("DiverB")),
 
                     Round = ParseInt(GetField("Round")),
                     Attempt = ParseInt(GetField("Attempt")),

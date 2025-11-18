@@ -86,7 +86,7 @@ VALUES
                 cmd.Parameters.AddWithValue("@Meet", ds.Meet);
                 cmd.Parameters.AddWithValue("@Event", ds.Event);
                 cmd.Parameters.AddWithValue("@DiverA", ds.DiverA);
-                cmd.Parameters.AddWithValue("@DiverB", ds.DiverB.HasValue ? (object)ds.DiverB.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@DiverB", ds.DiverB);
                 cmd.Parameters.AddWithValue("@Round", ds.Round);
                 cmd.Parameters.AddWithValue("@Attempt", ds.Attempt);
                 cmd.Parameters.AddWithValue("@StartOrder", ds.StartOrder);
@@ -120,22 +120,22 @@ VALUES
                 cmd.Parameters.AddWithValue("@Cat6", ds.Cat6.HasValue ? (ds.Cat6.Value ? 1 : 0) : DBNull.Value);
 
                 cmd.Parameters.AddWithValue("@PrevTot", ds.PrevTot.HasValue ? (object)ds.PrevTot.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@Retired", ds.Retired.HasValue ? (ds.Retired.Value ? 1 : 0) : DBNull.Value);
+                cmd.Parameters.AddWithValue("@Retired", ds.Retired != null ? ds.Retired : "");
                 cmd.Parameters.AddWithValue("@Predict", ds.Predict.HasValue ? (object)ds.Predict.Value : DBNull.Value);
                 cmd.Parameters.AddWithValue("@Guest", ds.Guest.HasValue ? (ds.Guest.Value ? 1 : 0) : DBNull.Value);
 
-                cmd.Parameters.AddWithValue("@Place", ds.Place);
+                cmd.Parameters.AddWithValue("@Place", ds.Place != null ? ds.Place : "");
                 cmd.Parameters.AddWithValue("@EPRef", ds.EPRef.HasValue ? (object)ds.EPRef.Value : DBNull.Value);
                 cmd.Parameters.AddWithValue("@Penalty", ds.Penalty.HasValue ? (object)ds.Penalty.Value : DBNull.Value);
                 cmd.Parameters.AddWithValue("@PlaceOrder", ds.PlaceOrder.HasValue ? (object)ds.PlaceOrder.Value : DBNull.Value);
 
-                cmd.Parameters.AddWithValue("@PSFPlace", ds.PSFPlace);
-                cmd.Parameters.AddWithValue("@P1", ds.P1);
-                cmd.Parameters.AddWithValue("@P2", ds.P2);
-                cmd.Parameters.AddWithValue("@P3", ds.P3);
-                cmd.Parameters.AddWithValue("@P4", ds.P4);
-                cmd.Parameters.AddWithValue("@P5", ds.P5);
-                cmd.Parameters.AddWithValue("@P6", ds.P6);
+                cmd.Parameters.AddWithValue("@PSFPlace", ds.PSFPlace != null ? ds.PSFPlace : "");
+                cmd.Parameters.AddWithValue("@P1", ds.P1!=null ? ds.P1 : "");
+                cmd.Parameters.AddWithValue("@P2", ds.P2 != null ? ds.P2 : "");
+                cmd.Parameters.AddWithValue("@P3", ds.P3 != null ? ds.P3 : "");
+                cmd.Parameters.AddWithValue("@P4", ds.P4 != null ? ds.P4 : "");
+                cmd.Parameters.AddWithValue("@P5", ds.P5 != null ? ds.P5 : "");
+                cmd.Parameters.AddWithValue("@P6", ds.P6 != null ? ds.P6 : "");
 
                 cmd.ExecuteNonQuery();
 
