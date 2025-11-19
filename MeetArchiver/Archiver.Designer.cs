@@ -43,7 +43,7 @@
             missingList = new ListBox();
             matchedList = new ListBox();
             clubsTab = new TabPage();
-            button1 = new Button();
+            newClubBtn = new Button();
             findBtn = new Button();
             searchTxt = new TextBox();
             searchClubLst = new ListBox();
@@ -55,14 +55,14 @@
             groupBox1 = new GroupBox();
             groupBox2 = new GroupBox();
             uploadTab = new TabPage();
-            textBox1 = new TextBox();
+            nationDescriptionTxt = new TextBox();
             internationalDescriptionTxt = new TextBox();
-            checkBox1 = new CheckBox();
+            internationalChk = new CheckBox();
             label3 = new Label();
             nationCmb = new ComboBox();
             label2 = new Label();
             logTxtBox = new RichTextBox();
-            button2 = new Button();
+            archiveBtn = new Button();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -231,7 +231,7 @@
             // 
             // clubsTab
             // 
-            clubsTab.Controls.Add(button1);
+            clubsTab.Controls.Add(newClubBtn);
             clubsTab.Controls.Add(findBtn);
             clubsTab.Controls.Add(searchTxt);
             clubsTab.Controls.Add(searchClubLst);
@@ -249,14 +249,14 @@
             clubsTab.Text = "Clubs";
             clubsTab.UseVisualStyleBackColor = true;
             // 
-            // button1
+            // newClubBtn
             // 
-            button1.Location = new Point(316, 411);
-            button1.Name = "button1";
-            button1.Size = new Size(126, 23);
-            button1.TabIndex = 14;
-            button1.Text = "Create new Club";
-            button1.UseVisualStyleBackColor = true;
+            newClubBtn.Location = new Point(316, 411);
+            newClubBtn.Name = "newClubBtn";
+            newClubBtn.Size = new Size(126, 23);
+            newClubBtn.TabIndex = 14;
+            newClubBtn.Text = "Create new Club";
+            newClubBtn.UseVisualStyleBackColor = true;
             // 
             // findBtn
             // 
@@ -352,14 +352,14 @@
             // 
             // uploadTab
             // 
-            uploadTab.Controls.Add(textBox1);
+            uploadTab.Controls.Add(nationDescriptionTxt);
             uploadTab.Controls.Add(internationalDescriptionTxt);
-            uploadTab.Controls.Add(checkBox1);
+            uploadTab.Controls.Add(internationalChk);
             uploadTab.Controls.Add(label3);
             uploadTab.Controls.Add(nationCmb);
             uploadTab.Controls.Add(label2);
             uploadTab.Controls.Add(logTxtBox);
-            uploadTab.Controls.Add(button2);
+            uploadTab.Controls.Add(archiveBtn);
             uploadTab.Location = new Point(4, 24);
             uploadTab.Name = "uploadTab";
             uploadTab.Size = new Size(1114, 507);
@@ -367,16 +367,16 @@
             uploadTab.Text = "Upload";
             uploadTab.UseVisualStyleBackColor = true;
             // 
-            // textBox1
+            // nationDescriptionTxt
             // 
-            textBox1.BackColor = Color.MistyRose;
-            textBox1.BorderStyle = BorderStyle.None;
-            textBox1.Location = new Point(777, 147);
-            textBox1.Multiline = true;
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(242, 68);
-            textBox1.TabIndex = 7;
-            textBox1.Text = "This is the country the meet took place in, it is auto selected on your current location please change if you are not where the meet took place";
+            nationDescriptionTxt.BackColor = Color.MistyRose;
+            nationDescriptionTxt.BorderStyle = BorderStyle.None;
+            nationDescriptionTxt.Location = new Point(777, 147);
+            nationDescriptionTxt.Multiline = true;
+            nationDescriptionTxt.Name = "nationDescriptionTxt";
+            nationDescriptionTxt.Size = new Size(242, 68);
+            nationDescriptionTxt.TabIndex = 7;
+            nationDescriptionTxt.Text = "This is the country the meet took place in, it is auto selected on your current location please change if you are not where the meet took place";
             // 
             // internationalDescriptionTxt
             // 
@@ -389,15 +389,15 @@
             internationalDescriptionTxt.TabIndex = 6;
             internationalDescriptionTxt.Text = "Only select this option if all participant are representing their country, it will display their nation rather than their club  in the  results section";
             // 
-            // checkBox1
+            // internationalChk
             // 
-            checkBox1.AutoSize = true;
-            checkBox1.Location = new Point(604, 39);
-            checkBox1.Name = "checkBox1";
-            checkBox1.Size = new Size(123, 19);
-            checkBox1.TabIndex = 5;
-            checkBox1.Text = "International Meet";
-            checkBox1.UseVisualStyleBackColor = true;
+            internationalChk.AutoSize = true;
+            internationalChk.Location = new Point(604, 39);
+            internationalChk.Name = "internationalChk";
+            internationalChk.Size = new Size(123, 19);
+            internationalChk.TabIndex = 5;
+            internationalChk.Text = "International Meet";
+            internationalChk.UseVisualStyleBackColor = true;
             // 
             // label3
             // 
@@ -438,15 +438,15 @@
             logTxtBox.TabIndex = 1;
             logTxtBox.Text = "";
             // 
-            // button2
+            // archiveBtn
             // 
-            button2.Location = new Point(32, 26);
-            button2.Name = "button2";
-            button2.Size = new Size(107, 23);
-            button2.TabIndex = 0;
-            button2.Text = "Archive Meet";
-            button2.UseVisualStyleBackColor = true;
-            button2.Click += ArchiveEventNow;
+            archiveBtn.Location = new Point(32, 26);
+            archiveBtn.Name = "archiveBtn";
+            archiveBtn.Size = new Size(107, 23);
+            archiveBtn.TabIndex = 0;
+            archiveBtn.Text = "Archive Meet";
+            archiveBtn.UseVisualStyleBackColor = true;
+            archiveBtn.Click += ArchiveEventNow;
             // 
             // Archiver
             // 
@@ -499,15 +499,15 @@
         private TextBox searchTxt;
         private GroupBox groupBox1;
         private GroupBox groupBox2;
-        private Button button2;
+        private Button archiveBtn;
         private Label InstructionLbl;
         private Label label2;
         private RichTextBox logTxtBox;
-        private Button button1;
-        private CheckBox checkBox1;
+        private Button newClubBtn;
+        private CheckBox internationalChk;
         private Label label3;
         private ComboBox nationCmb;
-        private TextBox textBox1;
+        private TextBox nationDescriptionTxt;
         private TextBox internationalDescriptionTxt;
     }
 }

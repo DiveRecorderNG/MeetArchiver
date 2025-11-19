@@ -28,33 +28,33 @@
         /// </summary>
         private void InitializeComponent()
         {
-            label1 = new Label();
-            label2 = new Label();
+            currDiverLbl = new Label();
+            ArchiveDiverLbl = new Label();
             matchLst = new ListBox();
-            label3 = new Label();
+            possibleMatchLbl = new Label();
             takeMatchBtn = new Button();
             overwriteDiverBtn = new Button();
             createDiverBtn = new Button();
-            label4 = new Label();
+            noMatchLbl = new Label();
             SuspendLayout();
             // 
-            // label1
+            // currDiverLbl
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(15, 25);
-            label1.Name = "label1";
-            label1.Size = new Size(77, 15);
-            label1.TabIndex = 0;
-            label1.Text = "Current Diver";
+            currDiverLbl.AutoSize = true;
+            currDiverLbl.Location = new Point(15, 25);
+            currDiverLbl.Name = "currDiverLbl";
+            currDiverLbl.Size = new Size(77, 15);
+            currDiverLbl.TabIndex = 0;
+            currDiverLbl.Text = "Current Diver";
             // 
-            // label2
+            // ArchiveDiverLbl
             // 
-            label2.AutoSize = true;
-            label2.Location = new Point(610, 25);
-            label2.Name = "label2";
-            label2.Size = new Size(77, 15);
-            label2.TabIndex = 1;
-            label2.Text = "Archive Diver";
+            ArchiveDiverLbl.AutoSize = true;
+            ArchiveDiverLbl.Location = new Point(610, 25);
+            ArchiveDiverLbl.Name = "ArchiveDiverLbl";
+            ArchiveDiverLbl.Size = new Size(77, 15);
+            ArchiveDiverLbl.TabIndex = 1;
+            ArchiveDiverLbl.Text = "Archive Diver";
             // 
             // matchLst
             // 
@@ -66,14 +66,14 @@
             matchLst.TabIndex = 2;
             matchLst.SelectedIndexChanged += matchLst_SelectedIndexChanged;
             // 
-            // label3
+            // possibleMatchLbl
             // 
-            label3.AutoSize = true;
-            label3.Location = new Point(412, 25);
-            label3.Name = "label3";
-            label3.Size = new Size(98, 15);
-            label3.TabIndex = 3;
-            label3.Text = "Possible matches";
+            possibleMatchLbl.AutoSize = true;
+            possibleMatchLbl.Location = new Point(412, 25);
+            possibleMatchLbl.Name = "possibleMatchLbl";
+            possibleMatchLbl.Size = new Size(98, 15);
+            possibleMatchLbl.TabIndex = 3;
+            possibleMatchLbl.Text = "Possible matches";
             // 
             // takeMatchBtn
             // 
@@ -109,28 +109,28 @@
             createDiverBtn.UseVisualStyleBackColor = true;
             createDiverBtn.Click += createDiverBtn_Click;
             // 
-            // label4
+            // noMatchLbl
             // 
-            label4.AutoSize = true;
-            label4.Location = new Point(473, 283);
-            label4.Name = "label4";
-            label4.Size = new Size(60, 15);
-            label4.TabIndex = 7;
-            label4.Text = "No match";
+            noMatchLbl.AutoSize = true;
+            noMatchLbl.Location = new Point(473, 283);
+            noMatchLbl.Name = "noMatchLbl";
+            noMatchLbl.Size = new Size(60, 15);
+            noMatchLbl.TabIndex = 7;
+            noMatchLbl.Text = "No match";
             // 
             // DiverMatcher
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(993, 342);
-            Controls.Add(label4);
+            Controls.Add(noMatchLbl);
             Controls.Add(createDiverBtn);
             Controls.Add(overwriteDiverBtn);
             Controls.Add(takeMatchBtn);
-            Controls.Add(label3);
+            Controls.Add(possibleMatchLbl);
             Controls.Add(matchLst);
-            Controls.Add(label2);
-            Controls.Add(label1);
+            Controls.Add(ArchiveDiverLbl);
+            Controls.Add(currDiverLbl);
             Name = "DiverMatcher";
             Text = "Match Diver";
             Load += DiverMatcher_Load;
@@ -140,13 +140,13 @@
 
         #endregion
 
-        private Label label1;
-        private Label label2;
+        private Label currDiverLbl;
+        private Label ArchiveDiverLbl;
         private ListBox matchLst;
-        private Label label3;
+        private Label possibleMatchLbl;
         private Button takeMatchBtn;
         private Button overwriteDiverBtn;
         private Button createDiverBtn;
-        private Label label4;
+        private Label noMatchLbl;
     }
 }
