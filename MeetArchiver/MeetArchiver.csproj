@@ -6,6 +6,8 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Title>Diver Recorder Archiver</Title>
+    <Authors>DRTeam</Authors>
   </PropertyGroup>
 
   <ItemGroup>
