@@ -23,7 +23,7 @@ namespace DR_APIs.Controllers
 
 
         [HttpPost("AddDiveSheets")]
-        public ActionResult<bool> AddDiveSheets(List<DiveSheet> sheets)
+        public ActionResult<bool> AddDiveSheets([FromBody] List<DiveSheet> sheets)
         {
 
             string pw = Request.Headers["X-API-KEY"];

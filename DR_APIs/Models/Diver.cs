@@ -3,11 +3,12 @@ using Microsoft.VisualBasic.FileIO;
 using System.Globalization;
 using System.Net.Http;
 using System.Reflection;
+using System.Text.Json.Serialization;
 
 namespace DR_APIs.Models
 {
-
-    public enum RecordStatus { Unassigned, Valid, PossibleMatches, New, Updated};
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum RecordStatus { Unassigned, Valid, PossibleMatch, New, Updated};
     public class Diver
     {
         public int ID { get; set; }

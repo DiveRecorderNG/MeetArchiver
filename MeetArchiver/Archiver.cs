@@ -165,7 +165,7 @@ namespace MeetArchiver
         private void RebuildDiverLists(List<Diver> chekkedDivers)
         {
             validatedDivers = chekkedDivers.Where(ds => ds.RecordStatus == RecordStatus.Valid || ds.RecordStatus == RecordStatus.Updated).ToList();
-            mismatchedDivers = chekkedDivers.Where(ds => ds.RecordStatus == RecordStatus.PossibleMatches).ToList();
+            mismatchedDivers = chekkedDivers.Where(ds => ds.RecordStatus == RecordStatus.PossibleMatch).ToList();
             newDivers = chekkedDivers.Where(ds => ds.RecordStatus == RecordStatus.New).ToList();
 
             matchedList.Items.Clear();
@@ -219,7 +219,7 @@ namespace MeetArchiver
         {
             // find distinct clubs from local dataset
             List<Club> distinctClubs = new List<Club>();
-            var clubs = selectedDivers.Select(dv => new Club { Representing = dv.Representing, TCode = dv.TCode }).ToList();
+            var clubs = checkedDivers.Select(dv => new Club { Representing = dv.Representing, TCode = dv.TCode }).ToList();
             foreach (var club in clubs)
             {
                 var exists = distinctClubs.Any(c => c.Representing == club.Representing && c.TCode == club.TCode);
@@ -305,7 +305,7 @@ namespace MeetArchiver
             var sugestedClubSelection = ((List<Club>)sugestedClubLst.Tag)[sugestedClubLst.SelectedIndex];
             var mismatchedClub = mismatchedClubs[mismatchedClubsLst.SelectedIndex];
 
-            var divesrToFix = selectedDivers.Where(dv => mismatchedClub.Representing == dv.Representing && mismatchedClub.TCode == dv.TCode).ToList();
+            var divesrToFix = checkedDivers.Where(dv => mismatchedClub.Representing == dv.Representing && mismatchedClub.TCode == dv.TCode).ToList();
             foreach (var diver in divesrToFix)
             {
                 diver.Representing = sugestedClubSelection.Representing;
@@ -327,7 +327,7 @@ namespace MeetArchiver
             var sugestedClubSelection = ((List<Club>)searchClubLst.Tag)[searchClubLst.SelectedIndex];
             var mismatchedClub = mismatchedClubs[mismatchedClubsLst.SelectedIndex];
 
-            var divesrToFix = selectedDivers.Where(dv => mismatchedClub.Representing == dv.Representing && mismatchedClub.TCode == dv.TCode).ToList();
+            var divesrToFix = checkedDivers.Where(dv => mismatchedClub.Representing == dv.Representing && mismatchedClub.TCode == dv.TCode).ToList();
             foreach (var diver in divesrToFix)
             {
                 diver.Representing = sugestedClubSelection.Representing;
@@ -355,7 +355,7 @@ namespace MeetArchiver
             WorkingForm.Close();
             if (checkedDivers.Where(a => a.RecordStatus == RecordStatus.New).Count() == 0
                 && checkedDivers.Where(a => a.RecordStatus == RecordStatus.Updated).Count() == 0
-                && checkedDivers.Where(a => a.RecordStatus == RecordStatus.PossibleMatches).Count() == 0)
+                && checkedDivers.Where(a => a.RecordStatus == RecordStatus.PossibleMatch).Count() == 0)
             {
                 logTxtBox.AppendText("All divers processed successfully with no errors.\n");
             }

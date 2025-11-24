@@ -22,7 +22,7 @@ namespace DR_APIs.Controllers
         }
 
         [HttpPost("AddEvents")]
-        public ActionResult<int> AddEvent([FromBody] List<Event> ev)
+        public ActionResult<int> AddEvents([FromBody] List<Event> ev)
         {
             string pw = Request.Headers["X-API-KEY"];
             string email = Request.Headers["X-API-ID"];
@@ -53,6 +53,7 @@ namespace DR_APIs.Controllers
         /// <summary>
         /// Insert a new event record. Uses parameterized SQL. Returns newly created Event primary key (LastInsertedId) or -1 on error.
         /// </summary>
+        [HttpPost("AddEvent")]
         public ActionResult<int> AddEvent(Event ev)
         {
             if (ev == null) return BadRequest("Event is required.");
