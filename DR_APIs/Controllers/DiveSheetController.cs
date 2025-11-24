@@ -33,7 +33,7 @@ namespace DR_APIs.Controllers
             {
                 return Unauthorized("Unauthorized access, you do not have permission to make changes to the database");
             }
-
+            Console.WriteLine("Pocessing request to archive " + sheets.Count + " Dives");
             try
             {
                 conn.Open();
@@ -42,12 +42,13 @@ namespace DR_APIs.Controllers
                     AddDiveSheet(sheets[i]);
 
                 }
-
+                Console.WriteLine("Dives written succesfully");
                 conn.Close();
-                return true;
+                return Ok();
             }
             catch (Exception ex)
             {
+                Console.WriteLine("Error writing dive to DB  : " + ex.ToString());
                 if (conn.State == ConnectionState.Open)
                     conn.Close();
                 return StatusCode(500, ex.Message);
@@ -152,6 +153,7 @@ VALUES
             }
             catch (Exception ex)
             {
+                Console.WriteLine("Error inserting dives: " + ex.ToString());
                 throw new Exception("Error inserting divesheet: " + ex.Message);
             }
             finally

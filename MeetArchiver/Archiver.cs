@@ -430,13 +430,13 @@ namespace MeetArchiver
             logTxtBox.AppendText("All identifiers updated, begining archive process\n");
 
 
-            var t6 = Event.AddEventsAsync(selectedEvents);
+            var t6 = Event.AddEventsAsync(selectedEvents, Program.CurrentUser);
             t6.Wait();
             var eventRet = t6.Result;
             logTxtBox.AppendText($"Events archived succesfully\n");
 
             WorkingForm.Show("Adding dive results . . . this can take a while!");
-            var t7 = DiveSheet.AddDiveSheetsAsync(selectedDiveSheets);
+            var t7 = DiveSheet.AddDiveSheetsAsync(selectedDiveSheets, Program.CurrentUser);
             t7.Wait();
             var diveRet = t7.Result;
             logTxtBox.AppendText($"DiveSheets archived succesfully\n");

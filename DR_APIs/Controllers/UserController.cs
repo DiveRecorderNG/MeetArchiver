@@ -26,6 +26,7 @@ namespace DR_APIs.Controllers
         [HttpGet("GetUser")]
         public  User GetUser(string APIKey, string email)
         {
+            Console.WriteLine("Got Auth request for " + email);
             return Helpers.GetUser(APIKey, email, conn);
         }
 

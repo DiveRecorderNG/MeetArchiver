@@ -218,7 +218,7 @@ namespace DR_APIs.Models
         /// Call the API endpoint /DiveSheet/AddDiveSheet to insert a single divesheet row.
         /// Returns the last-inserted id on success, or -1 on error/empty response.
         /// </summary>
-        public static async Task<int> AddDiveSheetAsync(DiveSheet ds, CancellationToken cancellationToken = default)
+        public static async Task<int> AddDiveSheetsAsync(List<DiveSheet> ds, User user, CancellationToken cancellationToken = default)
         {
             if (ds is null) throw new ArgumentNullException(nameof(ds));
 
@@ -226,7 +226,7 @@ namespace DR_APIs.Models
             handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
 
             var baseUrl = Environment.GetEnvironmentVariable("API_BASE_URL") ?? "https://localhost:7034";
-            var requestUri = $"{baseUrl.TrimEnd('/')}/DiveSheet/AddDiveSheet";
+            var requestUri = $"{baseUrl.TrimEnd('/')}/DiveSheet/AddDiveSheets";
 
             var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             var json = JsonSerializer.Serialize(ds, jsonOptions);
@@ -234,39 +234,25 @@ namespace DR_APIs.Models
             using var client = new HttpClient(handler);
             using var content = new StringContent(json, Encoding.UTF8, "application/json");
 
+            client.DefaultRequestHeaders.Add("X-API-KEY", user.APIKey);
+            client.DefaultRequestHeaders.Add("X-API-ID", user.UserEmail.ToString());
+
             using var response = await client.PostAsync(requestUri, content, cancellationToken).ConfigureAwait(false);
 
             var responseJson = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-            if (string.IsNullOrWhiteSpace(responseJson)) return -1;
-
-            try
+            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
             {
-                var id = JsonSerializer.Deserialize<int>(responseJson, jsonOptions);
-                return id;
-            }
-            catch
-            {
-                if (int.TryParse(responseJson.Trim().Trim('"'), out var parsed)) return parsed;
+                throw new UnauthorizedAccessException(responseJson.ToString());
             }
 
-            return -1;
+            if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            {
+                throw new Exception(responseJson.ToString());
+            }
+
+            return 1;
         }
 
-        /// <summary>
-        /// Insert multiple divesheets by calling the AddDiveSheet endpoint for each item.
-        /// Returns a list of inserted ids (same order). Failed inserts return -1 in-place.
-        /// </summary>
-        public static async Task<List<int>> AddDiveSheetsAsync(IEnumerable<DiveSheet> dives, CancellationToken cancellationToken = default)
-        {
-            if (dives is null) throw new ArgumentNullException(nameof(dives));
 
-            var results = new List<int>();
-            foreach (var ds in dives)
-            {
-                var id = await AddDiveSheetAsync(ds, cancellationToken).ConfigureAwait(false);
-                results.Add(id);
-            }
-            return results;
-        }
     }
 }

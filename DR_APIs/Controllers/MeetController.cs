@@ -256,7 +256,7 @@ namespace DR_APIs.Controllers
                 }
 
                 // Delete events for this meet (assumes table name me_events and column MeetRef)
-                const string deleteEventsSql = "DELETE FROM me_events WHERE MeetRef = @MRef;";
+                const string deleteEventsSql = "DELETE FROM ME_Events WHERE MeetRef = @MRef;";
                 using (var evCmd = new MySqlCommand(deleteEventsSql, conn, tx))
                 {
                     evCmd.Parameters.AddWithValue("@MRef", mref.Value);

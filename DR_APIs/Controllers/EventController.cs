@@ -24,11 +24,20 @@ namespace DR_APIs.Controllers
         [HttpPost("AddEvents")]
         public ActionResult<int> AddEvent([FromBody] List<Event> ev)
         {
+            string pw = Request.Headers["X-API-KEY"];
+            string email = Request.Headers["X-API-ID"];
+            var user = Helpers.GetUser(pw, email, conn);
+            if (user.pk == 0)
+            {
+                return Unauthorized("Unauthorized access, you do not have permission to make destructive changes to the database");
+            }
+            Console.WriteLine("Adding " + ev.Count + " Events to database");
             try
             {
                 foreach (var e in ev)
                 {
                     AddEvent(e);
+                    Console.WriteLine("Created new Event with MRef=" + e.MeetRef + " and eventID=" + e.ERef);
                 }
                 return Ok(0);
             }
@@ -44,10 +53,18 @@ namespace DR_APIs.Controllers
         /// <summary>
         /// Insert a new event record. Uses parameterized SQL. Returns newly created Event primary key (LastInsertedId) or -1 on error.
         /// </summary>
-        [HttpPost("AddEvent")]
-        public ActionResult<int> AddEvent([FromBody] Event ev)
+        public ActionResult<int> AddEvent(Event ev)
         {
             if (ev == null) return BadRequest("Event is required.");
+
+
+            string pw = Request.Headers["X-API-KEY"];
+            string email = Request.Headers["X-API-ID"];
+            var user = Helpers.GetUser(pw, email, conn);
+            if (user.pk == 0)
+            {
+                return Unauthorized("Unauthorized access, you do not have permission to make destructive changes to the database");
+            }
 
             bool needsClosing = false;
             try
@@ -59,7 +76,7 @@ namespace DR_APIs.Controllers
                 }
 
                 const string sql = @"
-                    INSERT INTO me_events
+                    INSERT INTO ME_Events
                         (MeetRef, ERef, EDate, ETitle, ESex, Board,
                          S1Dives, S1DD, S1Groups, S2Dives, S2DD, S2Groups,
                          Judges, Novice,
@@ -190,7 +207,7 @@ namespace DR_APIs.Controllers
                     needsClosing = true;
                 }
 
-                const string sql = "SELECT * FROM me_events WHERE MeetRef = @MeetRef ORDER BY EventRef;";
+                const string sql = "SELECT * FROM ME_Events WHERE MeetRef = @MeetRef ORDER BY EventRef;";
                 using var cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@MeetRef", meetRef);
 
