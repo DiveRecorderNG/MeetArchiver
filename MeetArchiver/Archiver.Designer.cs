@@ -65,6 +65,10 @@
             label2 = new Label();
             logTxtBox = new RichTextBox();
             archiveBtn = new Button();
+            adminTab = new TabPage();
+            editDiverLnk = new LinkLabel();
+            deleteMeet = new LinkLabel();
+            mergeDiversLnk = new LinkLabel();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -74,6 +78,7 @@
             diversTab.SuspendLayout();
             clubsTab.SuspendLayout();
             uploadTab.SuspendLayout();
+            adminTab.SuspendLayout();
             SuspendLayout();
             // 
             // splitContainer1
@@ -112,6 +117,7 @@
             tabControl1.Controls.Add(diversTab);
             tabControl1.Controls.Add(clubsTab);
             tabControl1.Controls.Add(uploadTab);
+            tabControl1.Controls.Add(adminTab);
             tabControl1.Dock = DockStyle.Fill;
             tabControl1.Location = new Point(0, 0);
             tabControl1.Name = "tabControl1";
@@ -463,6 +469,52 @@
             archiveBtn.UseVisualStyleBackColor = true;
             archiveBtn.Click += ArchiveEventNow;
             // 
+            // adminTab
+            // 
+            adminTab.Controls.Add(mergeDiversLnk);
+            adminTab.Controls.Add(deleteMeet);
+            adminTab.Controls.Add(editDiverLnk);
+            adminTab.Location = new Point(4, 24);
+            adminTab.Name = "adminTab";
+            adminTab.Size = new Size(1114, 507);
+            adminTab.TabIndex = 4;
+            adminTab.Text = "Admin";
+            adminTab.UseVisualStyleBackColor = true;
+            adminTab.Click += adminTab_Click;
+            // 
+            // editDiverLnk
+            // 
+            editDiverLnk.AutoSize = true;
+            editDiverLnk.Font = new Font("Segoe UI", 12F);
+            editDiverLnk.Location = new Point(17, 22);
+            editDiverLnk.Name = "editDiverLnk";
+            editDiverLnk.Size = new Size(77, 21);
+            editDiverLnk.TabIndex = 0;
+            editDiverLnk.TabStop = true;
+            editDiverLnk.Text = "Edit Diver";
+            // 
+            // deleteMeet
+            // 
+            deleteMeet.AutoSize = true;
+            deleteMeet.Font = new Font("Segoe UI", 12F);
+            deleteMeet.Location = new Point(17, 95);
+            deleteMeet.Name = "deleteMeet";
+            deleteMeet.Size = new Size(93, 21);
+            deleteMeet.TabIndex = 1;
+            deleteMeet.TabStop = true;
+            deleteMeet.Text = "Delete Meet";
+            // 
+            // mergeDiversLnk
+            // 
+            mergeDiversLnk.AutoSize = true;
+            mergeDiversLnk.Font = new Font("Segoe UI", 12F);
+            mergeDiversLnk.Location = new Point(17, 60);
+            mergeDiversLnk.Name = "mergeDiversLnk";
+            mergeDiversLnk.Size = new Size(103, 21);
+            mergeDiversLnk.TabIndex = 2;
+            mergeDiversLnk.TabStop = true;
+            mergeDiversLnk.Text = "Merge Divers";
+            // 
             // Archiver
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -486,6 +538,8 @@
             clubsTab.PerformLayout();
             uploadTab.ResumeLayout(false);
             uploadTab.PerformLayout();
+            adminTab.ResumeLayout(false);
+            adminTab.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -526,5 +580,9 @@
         private TextBox nationDescriptionTxt;
         private TextBox internationalDescriptionTxt;
         private Button nextClubcBtn;
+        private TabPage adminTab;
+        private LinkLabel mergeDiversLnk;
+        private LinkLabel deleteMeet;
+        private LinkLabel editDiverLnk;
     }
 }

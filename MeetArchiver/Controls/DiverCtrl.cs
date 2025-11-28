@@ -21,6 +21,17 @@ namespace MeetArchiver.Controls
             }
         }
 
+
+
+        /// <summary>
+        /// Create the control and optionally load values from the provided Diver.
+        /// The provided Diver is cloned so the original is not modified by the control.
+        /// </summary>
+        public DiverCtrl()
+        {
+            InitializeComponent();
+        }
+
         /// <summary>
         /// Create the control and optionally load values from the provided Diver.
         /// The provided Diver is cloned so the original is not modified by the control.
