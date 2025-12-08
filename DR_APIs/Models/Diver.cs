@@ -65,7 +65,7 @@ namespace DR_APIs.Models
 
                 if (parser.EndOfData) return divers;
 
-                var headerFields = parser.ReadFields() ?? Array.Empty<string>();
+                var headerFields = Headers.DiverHeader.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
                 var index = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
                 for (int i = 0; i < headerFields.Length; i++)
                 {

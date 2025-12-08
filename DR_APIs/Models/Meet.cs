@@ -45,7 +45,9 @@ namespace DR_APIs.Models
 
                 // Read header and map indices
                 if (parser.EndOfData) return meets;
-                string[] headers = parser.ReadFields()!;
+
+                string[] headers = Headers.MeetHeader.Split(',');
+
                 var idx = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
                 for (int i = 0; i < headers.Length; i++)
                 {

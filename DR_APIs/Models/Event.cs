@@ -110,7 +110,7 @@ namespace DR_APIs.Models
                 if (parser.EndOfData) return events;
 
                 // read header and build index
-                var headerFields = parser.ReadFields() ?? Array.Empty<string>();
+                var headerFields = Headers.EventHeader.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
                 var index = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
                 for (int i = 0; i < headerFields.Length; i++)
                 {
