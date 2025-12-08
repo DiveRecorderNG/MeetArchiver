@@ -30,7 +30,7 @@
         {
             DR_APIs.Models.Diver diver1 = new DR_APIs.Models.Diver();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditDiver));
-            diverCtrl1 = new Controls.DiverCtrl();
+            diverCtrl1 = new MeetArchiver.Controls.DiverCtrl();
             searchBtn = new Button();
             updateBtn = new Button();
             SuspendLayout();

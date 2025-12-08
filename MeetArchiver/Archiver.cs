@@ -481,7 +481,7 @@ namespace MeetArchiver
             t.Wait();
             var user = t.Result;
 
-            if (user.Role == null || (user.Role != "Admin" && user.Role != "DataManager"))
+            if (user.Role == null || (user.Role != "Admin" && user.Role != "Manager"))
             {
                 MessageBox.Show("You do not have sufficient privileges to use the Meet Archiver. Please contact your system administrator.");
                 this.Close();
@@ -491,6 +491,9 @@ namespace MeetArchiver
             Program.CurrentUser = user; // squirel this away in Program for later use
 
             loadDataToolStripMenuItem_Click(this, EventArgs.Empty);
+
+            if(user.Role != "Admin")
+                tabControl1.TabPages.Remove(adminTab);
         }
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
@@ -527,6 +530,18 @@ namespace MeetArchiver
         private void adminTab_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void resetKeyLnk_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            var frm = new ManageUser();
+            frm.Show();
+        }
+
+        private void addUserKey_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            var frm = new AddUser();
+            frm.Show();
         }
     }
 }

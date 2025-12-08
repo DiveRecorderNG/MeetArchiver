@@ -16,6 +16,9 @@
     <Compile Update="EditDiver.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="ManageUser.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="WorkingForm.cs">
       <SubType>Form</SubType>
     </Compile>

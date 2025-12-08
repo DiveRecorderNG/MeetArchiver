@@ -66,9 +66,11 @@
             logTxtBox = new RichTextBox();
             archiveBtn = new Button();
             adminTab = new TabPage();
-            editDiverLnk = new LinkLabel();
-            deleteMeet = new LinkLabel();
+            addUserKey = new LinkLabel();
+            resetKeyLnk = new LinkLabel();
             mergeDiversLnk = new LinkLabel();
+            deleteMeet = new LinkLabel();
+            editDiverLnk = new LinkLabel();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -471,6 +473,8 @@
             // 
             // adminTab
             // 
+            adminTab.Controls.Add(addUserKey);
+            adminTab.Controls.Add(resetKeyLnk);
             adminTab.Controls.Add(mergeDiversLnk);
             adminTab.Controls.Add(deleteMeet);
             adminTab.Controls.Add(editDiverLnk);
@@ -482,16 +486,40 @@
             adminTab.UseVisualStyleBackColor = true;
             adminTab.Click += adminTab_Click;
             // 
-            // editDiverLnk
+            // addUserKey
             // 
-            editDiverLnk.AutoSize = true;
-            editDiverLnk.Font = new Font("Segoe UI", 12F);
-            editDiverLnk.Location = new Point(17, 22);
-            editDiverLnk.Name = "editDiverLnk";
-            editDiverLnk.Size = new Size(77, 21);
-            editDiverLnk.TabIndex = 0;
-            editDiverLnk.TabStop = true;
-            editDiverLnk.Text = "Edit Diver";
+            addUserKey.AutoSize = true;
+            addUserKey.Font = new Font("Segoe UI", 12F);
+            addUserKey.Location = new Point(17, 170);
+            addUserKey.Name = "addUserKey";
+            addUserKey.Size = new Size(74, 21);
+            addUserKey.TabIndex = 4;
+            addUserKey.TabStop = true;
+            addUserKey.Text = "Add User";
+            addUserKey.LinkClicked += addUserKey_LinkClicked;
+            // 
+            // resetKeyLnk
+            // 
+            resetKeyLnk.AutoSize = true;
+            resetKeyLnk.Font = new Font("Segoe UI", 12F);
+            resetKeyLnk.Location = new Point(17, 133);
+            resetKeyLnk.Name = "resetKeyLnk";
+            resetKeyLnk.Size = new Size(113, 21);
+            resetKeyLnk.TabIndex = 3;
+            resetKeyLnk.TabStop = true;
+            resetKeyLnk.Text = "Reset User Key";
+            resetKeyLnk.LinkClicked += resetKeyLnk_LinkClicked;
+            // 
+            // mergeDiversLnk
+            // 
+            mergeDiversLnk.AutoSize = true;
+            mergeDiversLnk.Font = new Font("Segoe UI", 12F);
+            mergeDiversLnk.Location = new Point(17, 60);
+            mergeDiversLnk.Name = "mergeDiversLnk";
+            mergeDiversLnk.Size = new Size(103, 21);
+            mergeDiversLnk.TabIndex = 2;
+            mergeDiversLnk.TabStop = true;
+            mergeDiversLnk.Text = "Merge Divers";
             // 
             // deleteMeet
             // 
@@ -504,16 +532,16 @@
             deleteMeet.TabStop = true;
             deleteMeet.Text = "Delete Meet";
             // 
-            // mergeDiversLnk
+            // editDiverLnk
             // 
-            mergeDiversLnk.AutoSize = true;
-            mergeDiversLnk.Font = new Font("Segoe UI", 12F);
-            mergeDiversLnk.Location = new Point(17, 60);
-            mergeDiversLnk.Name = "mergeDiversLnk";
-            mergeDiversLnk.Size = new Size(103, 21);
-            mergeDiversLnk.TabIndex = 2;
-            mergeDiversLnk.TabStop = true;
-            mergeDiversLnk.Text = "Merge Divers";
+            editDiverLnk.AutoSize = true;
+            editDiverLnk.Font = new Font("Segoe UI", 12F);
+            editDiverLnk.Location = new Point(17, 22);
+            editDiverLnk.Name = "editDiverLnk";
+            editDiverLnk.Size = new Size(77, 21);
+            editDiverLnk.TabIndex = 0;
+            editDiverLnk.TabStop = true;
+            editDiverLnk.Text = "Edit Diver";
             // 
             // Archiver
             // 
@@ -584,5 +612,7 @@
         private LinkLabel mergeDiversLnk;
         private LinkLabel deleteMeet;
         private LinkLabel editDiverLnk;
+        private LinkLabel resetKeyLnk;
+        private LinkLabel addUserKey;
     }
 }
