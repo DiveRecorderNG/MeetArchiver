@@ -66,7 +66,10 @@ namespace MeetArchiver
         private void matchLst_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (matchLst.SelectedIndex >= 0 && matchLst.SelectedIndex <= _currDiver.PossibleMatches.Count)
+            {
                 suggestedDiverCtrl.EditedDiver = _currDiver.PossibleMatches[matchLst.SelectedIndex];
+                suggestedDiverCtrl.HighlightMismatches(_currDiver);
+            }
         }
 
         private void takeMatchBtn_Click(object sender, EventArgs e)

@@ -225,6 +225,7 @@ namespace MeetArchiver.Controls
             Controls.Add(txtNation);
             Name = "DiverCtrl";
             Size = new Size(362, 239);
+            Load += DiverCtrl_Load;
             ((System.ComponentModel.ISupportInitialize)nudBorn).EndInit();
             ResumeLayout(false);
             PerformLayout();

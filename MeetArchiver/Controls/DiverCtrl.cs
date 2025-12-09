@@ -12,7 +12,7 @@ namespace MeetArchiver.Controls
         private Diver _editedDiver = new Diver();
         // Public edited instance (a clone of the input to avoid mutating the original)
         public Diver EditedDiver
-        { 
+        {
             get { return _editedDiver; }
             set
             {
@@ -62,5 +62,29 @@ namespace MeetArchiver.Controls
 
         private static string? NormalizeEmpty(string? s) => string.IsNullOrWhiteSpace(s) ? null : s.Trim();
 
+        private void DiverCtrl_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        public void HighlightMismatches(Diver dr)
+        {
+
+            if (_editedDiver.FirstName != dr.FirstName)
+                txtFirstName.BackColor = Color.Orange;
+
+            if(_editedDiver.LastName != dr.LastName)
+                txtLastName.BackColor = Color.Orange;
+
+            if(_editedDiver.Born != dr.Born)
+                nudBorn.BackColor = Color.Orange;
+
+            if(_editedDiver.Representing != dr.Representing)
+                txtRepresenting.BackColor = Color.Orange;
+
+            if(_editedDiver.Sex != dr.Sex)
+                cmbSex.BackColor = Color.Orange;
+
+        }
     }
 }
