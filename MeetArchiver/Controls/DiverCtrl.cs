@@ -71,19 +71,49 @@ namespace MeetArchiver.Controls
         {
 
             if (_editedDiver.FirstName != dr.FirstName)
+            {
                 txtFirstName.BackColor = Color.Orange;
+            }
+            else
+            {
+                txtFirstName.BackColor = SystemColors.Window;
+            }
 
-            if(_editedDiver.LastName != dr.LastName)
+            if (_editedDiver.LastName != dr.LastName)
+            {
                 txtLastName.BackColor = Color.Orange;
+            }
+            else
+            {
+                txtLastName.BackColor = SystemColors.Window;
+            }
 
-            if(_editedDiver.Born != dr.Born)
+            if (_editedDiver.Born != dr.Born)
+            {
                 nudBorn.BackColor = Color.Orange;
+            }
+            else
+            {
+                nudBorn.BackColor = SystemColors.Window;
+            }
 
-            if(_editedDiver.Representing != dr.Representing)
+            if (_editedDiver.Representing != dr.Representing)
+            {
                 txtRepresenting.BackColor = Color.Orange;
+            }
+            else
+            {
+                txtRepresenting.BackColor = SystemColors.Window;
+            }
 
-            if(_editedDiver.Sex != dr.Sex)
+            if (_editedDiver.Sex != dr.Sex)
+            {
                 cmbSex.BackColor = Color.Orange;
+            }
+            else
+            {
+                cmbSex.BackColor = SystemColors.Window;
+            }
 
         }
     }

@@ -83,7 +83,7 @@ namespace DR_APIs.Controllers
             // didnlt find a unique match, try soundex
             sql = "SELECT * FROM ME_Divers WHERE (soundex(@FirstName) = soundex(FirstName) " +
                 "AND soundex(LastName) = soundex(@LastName) " +
-                "AND Born>=(@Born-1) AND Born<=(@Born+1)) " + 
+                "AND Born>=(@Born-1) AND Born<=(@Born+1)) " +
                 "OR (LastName=@LastName AND Born=@Born AND Sex=@Sex) " +
                 "OR (LastName = @FirstName AND FirstName = @LastName AND Born=@Born);";
 
