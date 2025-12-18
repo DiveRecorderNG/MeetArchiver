@@ -305,5 +305,74 @@ namespace DR_APIs.Controllers
                 return StatusCode(500, "Error updating divers: " + ex.Message);
             }
         }
+
+        [HttpPost("MergeDivers")]
+        public ActionResult<bool> MergeDivers(List<Diver> divers)
+        {
+            Diver survivor = divers[0]; 
+            Diver casualty = divers[1];
+
+            string pw = Request.Headers["X-API-KEY"];
+            string email = Request.Headers["X-API-ID"];
+            var user = Helpers.GetUser(pw, email, conn);
+            if (user.pk == 0)
+            {
+                return Unauthorized("Unauthorized access, you do not have permission to make destructive changes to the database");
+            }
+
+            bool needsClosing = false;
+            MySqlTransaction? tx = null;
+
+            try
+            {
+                if (conn.State != ConnectionState.Open)
+                {
+                    conn.Open();
+                    needsClosing = true;
+                }
+
+                tx = conn.BeginTransaction();
+
+                // update Diver A.
+                var sqlDA = @"UPDATE ME_Divesheets SET DiverA=@survivor WHERE DiverA=@casualty;";
+                using var cmd1 = new MySqlCommand(sqlDA, conn, tx);
+                {
+                    cmd1.Parameters.AddWithValue("@survivor", (object?)survivor.ArchiveID);
+                    cmd1.Parameters.AddWithValue("@casualty", (object?)casualty.ArchiveID);
+                    cmd1.ExecuteNonQuery();
+                }
+
+                // update Diver A.
+                var sqlDB = @"UPDATE ME_Divesheets SET DiverB=@survivor WHERE DiverB=@casualty;";
+                var cmd2 = new MySqlCommand(sqlDB, conn, tx);
+                {
+                    cmd2.Parameters.AddWithValue("@survivor", (object?)survivor.ArchiveID);
+                    cmd2.Parameters.AddWithValue("@casualty", (object?)casualty.ArchiveID);
+                    cmd2.ExecuteNonQuery();
+                }
+
+                // delete casualty.
+                var sqlDel = @"DELETE FROM ME_Divers WHERE DRef=@casualty;";
+                var cmd3 = new MySqlCommand(sqlDel, conn, tx);
+                {
+                    cmd3.Parameters.AddWithValue("@casualty", (object?)casualty.ArchiveID);
+                    cmd3.ExecuteNonQuery();
+                }
+
+                tx.Commit();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                if (conn.State == ConnectionState.Open)
+                    conn.Close();
+                return StatusCode(500, "Error merging divers: " + ex.Message);
+            }
+            finally
+            {
+                if (needsClosing && conn.State == ConnectionState.Open) conn.Close();
+            }
+        }
     }
 }

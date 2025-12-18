@@ -492,7 +492,7 @@ namespace MeetArchiver
 
             loadDataToolStripMenuItem_Click(this, EventArgs.Empty);
 
-            if(user.Role != "Admin")
+            if (user.Role != "Admin")
                 tabControl1.TabPages.Remove(adminTab);
         }
 
@@ -541,6 +541,12 @@ namespace MeetArchiver
         private void addUserKey_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             var frm = new AddUser();
+            frm.Show();
+        }
+
+        private void editDiverLnk_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            var frm = new EditDiver();
             frm.Show();
         }
     }

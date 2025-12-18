@@ -56,7 +56,7 @@ namespace MeetArchiver.Controls
             // 
             // txtId
             // 
-            txtId.Location = new Point(229, 264);
+            txtId.Location = new Point(163, 228);
             txtId.Name = "txtId";
             txtId.ReadOnly = true;
             txtId.Size = new Size(220, 23);
@@ -73,6 +73,7 @@ namespace MeetArchiver.Controls
             // 
             // lblFirstName
             // 
+            lblFirstName.ForeColor = SystemColors.ActiveCaptionText;
             lblFirstName.Location = new Point(8, 14);
             lblFirstName.Name = "lblFirstName";
             lblFirstName.Size = new Size(104, 26);
@@ -82,13 +83,17 @@ namespace MeetArchiver.Controls
             // 
             // txtFirstName
             // 
+            txtFirstName.BackColor = SystemColors.ControlLightLight;
+            txtFirstName.ForeColor = SystemColors.ControlText;
             txtFirstName.Location = new Point(118, 17);
             txtFirstName.Name = "txtFirstName";
             txtFirstName.Size = new Size(220, 23);
             txtFirstName.TabIndex = 5;
+            txtFirstName.TextChanged += txtFirstName_TextChanged;
             // 
             // lblLastName
             // 
+            lblLastName.ForeColor = SystemColors.ControlText;
             lblLastName.Location = new Point(8, 43);
             lblLastName.Name = "lblLastName";
             lblLastName.Size = new Size(104, 26);
@@ -98,13 +103,17 @@ namespace MeetArchiver.Controls
             // 
             // txtLastName
             // 
-            txtLastName.Location = new Point(118, 46);
+            txtLastName.BackColor = SystemColors.ControlLightLight;
+            txtLastName.ForeColor = SystemColors.ControlText;
+            txtLastName.Location = new Point(118, 43);
             txtLastName.Name = "txtLastName";
             txtLastName.Size = new Size(220, 23);
             txtLastName.TabIndex = 7;
+            txtLastName.TextChanged += txtLastName_TextChanged;
             // 
             // lblRepresenting
             // 
+            lblRepresenting.ForeColor = SystemColors.ControlText;
             lblRepresenting.Location = new Point(8, 69);
             lblRepresenting.Name = "lblRepresenting";
             lblRepresenting.Size = new Size(104, 26);
@@ -114,31 +123,38 @@ namespace MeetArchiver.Controls
             // 
             // txtRepresenting
             // 
-            txtRepresenting.Location = new Point(118, 72);
+            txtRepresenting.BackColor = SystemColors.ControlLightLight;
+            txtRepresenting.ForeColor = SystemColors.ControlText;
+            txtRepresenting.Location = new Point(118, 69);
             txtRepresenting.Name = "txtRepresenting";
             txtRepresenting.Size = new Size(220, 23);
             txtRepresenting.TabIndex = 9;
+            txtRepresenting.TextChanged += txtRepresenting_TextChanged;
             // 
             // lblSex
             // 
+            lblSex.ForeColor = SystemColors.ControlText;
             lblSex.Location = new Point(8, 95);
             lblSex.Name = "lblSex";
             lblSex.Size = new Size(104, 26);
-            lblSex.TabIndex = 10;
+            lblSex.TabIndex = 10; 
             lblSex.Text = "Sex";
             lblSex.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // cmbSex
             // 
+            cmbSex.BackColor = SystemColors.ControlLightLight;
             cmbSex.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbSex.ForeColor = SystemColors.ControlText;
             cmbSex.Items.AddRange(new object[] { "", "M", "F" });
-            cmbSex.Location = new Point(118, 98);
+            cmbSex.Location = new Point(118, 95);
             cmbSex.Name = "cmbSex";
             cmbSex.Size = new Size(80, 23);
             cmbSex.TabIndex = 11;
             // 
             // lblBorn
             // 
+            lblBorn.ForeColor = SystemColors.ControlText;
             lblBorn.Location = new Point(8, 121);
             lblBorn.Name = "lblBorn";
             lblBorn.Size = new Size(104, 26);
@@ -148,14 +164,18 @@ namespace MeetArchiver.Controls
             // 
             // nudBorn
             // 
-            nudBorn.Location = new Point(118, 124);
+            nudBorn.BackColor = SystemColors.ControlLightLight;
+            nudBorn.ForeColor = SystemColors.ControlText;
+            nudBorn.Location = new Point(118, 121);
             nudBorn.Maximum = new decimal(new int[] { 9999, 0, 0, 0 });
             nudBorn.Name = "nudBorn";
+            nudBorn.ReadOnly = true;
             nudBorn.Size = new Size(80, 23);
             nudBorn.TabIndex = 13;
             // 
             // lblCoach
             // 
+            lblCoach.ForeColor = SystemColors.ControlText;
             lblCoach.Location = new Point(8, 147);
             lblCoach.Name = "lblCoach";
             lblCoach.Size = new Size(104, 26);
@@ -165,13 +185,17 @@ namespace MeetArchiver.Controls
             // 
             // txtCoach
             // 
-            txtCoach.Location = new Point(118, 150);
+            txtCoach.BackColor = SystemColors.ControlLightLight;
+            txtCoach.ForeColor = SystemColors.ControlText;
+            txtCoach.Location = new Point(118, 147);
             txtCoach.Name = "txtCoach";
             txtCoach.Size = new Size(220, 23);
             txtCoach.TabIndex = 15;
+            txtCoach.TextChanged += txtCoach_TextChanged;
             // 
             // lblTCode
             // 
+            lblTCode.ForeColor = SystemColors.ControlText;
             lblTCode.Location = new Point(8, 173);
             lblTCode.Name = "lblTCode";
             lblTCode.Size = new Size(104, 26);
@@ -181,13 +205,17 @@ namespace MeetArchiver.Controls
             // 
             // txtTCode
             // 
-            txtTCode.Location = new Point(118, 176);
+            txtTCode.BackColor = SystemColors.ControlLightLight;
+            txtTCode.ForeColor = SystemColors.ControlText;
+            txtTCode.Location = new Point(118, 173);
             txtTCode.Name = "txtTCode";
             txtTCode.Size = new Size(80, 23);
             txtTCode.TabIndex = 17;
+            txtTCode.TextChanged += txtTCode_TextChanged;
             // 
             // lblNation
             // 
+            lblNation.ForeColor = SystemColors.ControlText;
             lblNation.Location = new Point(8, 199);
             lblNation.Name = "lblNation";
             lblNation.Size = new Size(104, 26);
@@ -197,10 +225,13 @@ namespace MeetArchiver.Controls
             // 
             // txtNation
             // 
+            txtNation.BackColor = SystemColors.ControlLightLight;
+            txtNation.ForeColor = SystemColors.ControlText;
             txtNation.Location = new Point(118, 199);
             txtNation.Name = "txtNation";
             txtNation.Size = new Size(220, 23);
             txtNation.TabIndex = 19;
+            txtNation.TextChanged += txtNation_TextChanged;
             // 
             // DiverCtrl
             // 

@@ -542,6 +542,7 @@
             editDiverLnk.TabIndex = 0;
             editDiverLnk.TabStop = true;
             editDiverLnk.Text = "Edit Diver";
+            editDiverLnk.LinkClicked += editDiverLnk_LinkClicked;
             // 
             // Archiver
             // 

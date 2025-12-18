@@ -23,6 +23,7 @@ namespace MeetArchiver
         {
             InitializeComponent();
             _currDiver = diverIn;
+
         }
 
 
@@ -61,6 +62,8 @@ namespace MeetArchiver
             this.Controls.Add(suggestedDiverCtrl);
             suggestedDiverCtrl.Location = new Point(610, 35);
             setupDiverControls();
+            currDiverCtrl.Readonly = true;
+            suggestedDiverCtrl.Readonly = true;
         }
 
         private void matchLst_SelectedIndexChanged(object sender, EventArgs e)
