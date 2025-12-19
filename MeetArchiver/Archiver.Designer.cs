@@ -531,6 +531,7 @@
             deleteMeet.TabIndex = 1;
             deleteMeet.TabStop = true;
             deleteMeet.Text = "Delete Meet";
+            deleteMeet.LinkClicked += deleteMeet_LinkClicked;
             // 
             // editDiverLnk
             // 

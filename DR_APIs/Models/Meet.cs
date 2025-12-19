@@ -1,13 +1,10 @@
-﻿using Microsoft.VisualBasic.FileIO;
-using System;
-using System.Collections.Generic;
+﻿using DR_APIs.Models;
+using Microsoft.VisualBasic.FileIO;
 using System.Globalization;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace DR_APIs.Models
 {
@@ -31,7 +28,10 @@ namespace DR_APIs.Models
         public bool International { get; set; }
         public string? MeetGUID { get; set; }
 
-
+        public override string ToString()
+        {
+                return $"{Title} ({StartDate:yyyy-MM-dd} to {EndDate:yyyy-MM-dd})";
+        }
 
         public static List<Meet> ParseMeets(string filePath)
         {
@@ -98,8 +98,6 @@ namespace DR_APIs.Models
                     meet.MeetGUID = NullIfEmpty(GetField("MeetGUID", fields));
                     // Note: CSV doesn't provide Nation/International in the sample; leave defaults
 
-
-                    
                     meets.Add(meet);
                 }
             }
@@ -111,7 +109,7 @@ namespace DR_APIs.Models
         {
             result = default;
             if (string.IsNullOrWhiteSpace(raw)) return false;
-            raw = raw.Trim().Trim('"' );
+            raw = raw.Trim().Trim('"');
 
             // Try exact yyyy-MM-dd first, then fallback to DateTime parse
             if (DateOnly.TryParseExact(raw, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out result))
@@ -230,14 +228,44 @@ namespace DR_APIs.Models
         }
 
         /// <summary>
+        /// Call the REST service /Meet/SearchByTitle to search for meets by title.
+        /// Returns a list of meets matching the search criteria, or an empty list if none found.
+        /// Throws HttpRequestException for non-success responses.
+        /// </summary>
+        public static async Task<List<Meet>> SearchByTitleAsync(string title, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrWhiteSpace(title)) return new List<Meet>();
+
+            var httpClientHandler = new HttpClientHandler();
+            httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true;
+
+            var baseUrl = Environment.GetEnvironmentVariable("API_BASE_URL") ?? "https://localhost:7034";
+            var requestUri = $"{baseUrl.TrimEnd('/')}/Meet/SearchByTitle?title={Uri.EscapeDataString(title)}";
+
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            using var client = new HttpClient(httpClientHandler);
+            using var response = await client.GetAsync(requestUri, cancellationToken).ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+
+            var responseJson = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+            if (string.IsNullOrWhiteSpace(responseJson)) return new List<Meet>();
+
+            var meets = JsonSerializer.Deserialize<List<Meet>>(responseJson, jsonOptions);
+            return meets ?? new List<Meet>();
+        }
+
+        /// <summary>
         /// Call the REST service /Meet/DeleteByGuid to remove a meet (and related events/divesheets).
         /// Returns the number of meet rows deleted (as returned by the API), returns 0 if the meet was not found,
         /// or -1 on error/unparseable response.
         /// </summary>
         public static async Task<int> DeleteByGuidAsync(string meetGuid, User user, CancellationToken cancellationToken = default)
         {
-
-
             if (string.IsNullOrWhiteSpace(meetGuid)) throw new ArgumentNullException(nameof(meetGuid));
 
             var httpClientHandler = new HttpClientHandler();
@@ -293,5 +321,68 @@ namespace DR_APIs.Models
 
             return -1;
         }
+
+        /// <summary>
+        /// Call the REST service /Meet/DeleteByGuid to remove a meet (and related events/divesheets).
+        /// Returns the number of meet rows deleted (as returned by the API), returns 0 if the meet was not found,
+        /// or -1 on error/unparseable response.
+        /// </summary>
+        public static async Task<int> DeleteByIdAsync(int Id, User user, CancellationToken cancellationToken = default)
+        {
+
+            var httpClientHandler = new HttpClientHandler();
+            httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true;
+
+            var baseUrl = Environment.GetEnvironmentVariable("API_BASE_URL") ?? "https://localhost:7034";
+            var requestUri = $"{baseUrl.TrimEnd('/')}/Meet/DeleteById?Id={Uri.EscapeDataString(Id.ToString())}";
+
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            using var client = new HttpClient(httpClientHandler);
+
+            client.DefaultRequestHeaders.Add("X-API-KEY", user.APIKey);
+            client.DefaultRequestHeaders.Add("X-API-ID", user.UserEmail.ToString());
+
+            using var request = new HttpRequestMessage(HttpMethod.Delete, requestUri);
+            using var response = await client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+                return 0;
+
+            var responseJson = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+            if (string.IsNullOrWhiteSpace(responseJson)) return -1;
+
+            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                throw new UnauthorizedAccessException(responseJson.ToString());
+            }
+
+            if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            {
+                throw new Exception(responseJson.ToString());
+            }
+
+            try
+            {
+                var value = JsonSerializer.Deserialize<int>(responseJson, jsonOptions);
+                if (value != 0 || responseJson.Trim().Trim('"') == "0")
+                    return value;
+            }
+            catch
+            {
+                // try plain parse
+            }
+
+            if (int.TryParse(responseJson.Trim().Trim('"'), out var parsed))
+            {
+                return parsed;
+            }
+
+            return -1;
+        }
+
     }
 }

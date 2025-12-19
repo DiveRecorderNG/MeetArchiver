@@ -1,4 +1,5 @@
 ﻿using DR_APIs.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
 using System.Data;
@@ -204,6 +205,8 @@ namespace DR_APIs.Controllers
         [HttpDelete("DeleteByGuid")]
         public ActionResult<int> DeleteByGuid(string meetGuid)
         {
+            int res;
+
             if (string.IsNullOrWhiteSpace(meetGuid)) return BadRequest("meetGuid is required.");
 
              string pw = Request.Headers["X-API-KEY"];
@@ -214,6 +217,48 @@ namespace DR_APIs.Controllers
                 return Unauthorized("Unauthorized access, you do not have permission to make destructive changes to the database");
             }
 
+            try
+            {
+                res = Delete(meetGuid, "SELECT MRef, owner FROM ME_Meets WHERE MeetGUID = @ID LIMIT 1;", user, true);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            if (res == -1)
+            {
+                return Unauthorized("You do not have permission to delete this meet");
+            }
+            return Ok(1);
+        }
+
+        [HttpDelete("DeleteById")]
+        public ActionResult<int> DeleteById(int Id)
+        {
+            int res;
+            string pw = Request.Headers["X-API-KEY"];
+            string email = Request.Headers["X-API-ID"];
+            var user = Helpers.GetUser(pw, email, conn);
+            if (user.pk == 0 || user.Role != "Admin")
+            {
+                return Unauthorized("Unauthorized access, you do not have permission to delete this meet");
+            }
+
+            try
+            {
+                res = Delete(Id.ToString(), "SELECT MRef, owner FROM ME_Meets WHERE MRef = @ID LIMIT 1;", user, false);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+
+            return Ok(1);
+        }
+
+
+        private int Delete(string id, string findString, User user, bool checkOwner)
+        {
 
             bool needsClosing = false;
             MySqlTransaction? tx = null;
@@ -227,22 +272,24 @@ namespace DR_APIs.Controllers
 
                 // Find MRef for the supplied MeetGUID
                 int? mref = null;
-                const string findSql = "SELECT MRef, owner FROM ME_Meets WHERE MeetGUID = @MeetGUID LIMIT 1;";
-                var findCmd = new MySqlCommand(findSql, conn);
-                
-                    findCmd.Parameters.AddWithValue("@MeetGUID", meetGuid);
+                //const string findSql = "SELECT MRef, owner FROM ME_Meets WHERE MeetGUID = @MeetGUID LIMIT 1;";
+                var findCmd = new MySqlCommand(findString, conn);
 
-                    var dt = new DataTable();
-                    using var da = new MySqlDataAdapter(findCmd);
-                    da.Fill(dt);
+                findCmd.Parameters.AddWithValue("@ID", id);
+
+                var dt = new DataTable();
+                using var da = new MySqlDataAdapter(findCmd);
+                da.Fill(dt);
 
                 mref = dt.Rows[0]["MRef"] != DBNull.Value ? Convert.ToInt32(dt.Rows[0]["MRef"]) : (int?)null;
-                int owner= Int32.Parse(dt.Rows[0]["owner"].ToString());
+                int owner = Int32.Parse(dt.Rows[0]["owner"].ToString());
 
-                if (owner != user.pk)  // user did't publish it so they can't delete it
+                if (checkOwner)
                 {
-                    return Unauthorized("Unauthorized access. Only the person that published the meet can delete it");
-
+                    if (owner != user.pk)  // user did't publish it so they can't delete it
+                    {
+                        return -1;
+                    }
                 }
 
                 tx = conn.BeginTransaction();
@@ -276,7 +323,7 @@ namespace DR_APIs.Controllers
 
                 // Return total rows deleted (meets + events + divesheets) is useful but we only have meetsDeleted directly;
                 // if callers need exact counts for events/divesheets, modify to capture ExecuteNonQuery results above.
-                return Ok(meetsDeleted);
+                return 1;
             }
             catch (Exception ex)
             {
@@ -286,7 +333,7 @@ namespace DR_APIs.Controllers
                 }
                 catch { /* swallow rollback errors */ }
 
-                return StatusCode(500, ex.Message);
+                throw new Exception(ex.Message);
             }
             finally
             {

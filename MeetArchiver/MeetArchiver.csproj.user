@@ -10,6 +10,12 @@
     <Compile Update="Controls\DiverCtrl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="Controls\MeetCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="DeleteMeet.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="DiverMatcher.cs">
       <SubType>Form</SubType>
     </Compile>

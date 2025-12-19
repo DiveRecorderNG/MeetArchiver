@@ -515,6 +515,12 @@ namespace MeetArchiver
                 nationCmb.Text = Program.CountryCode;
                 InstructionLbl.Text = "Step 4: Begin upload of the meet.";
             }
+
+            if (tabControl1.SelectedTab == adminTab)
+            {
+                InstructionLbl.Text = "Admin stuff";
+            }
+
         }
 
         private void nationCmb_SelectedIndexChanged(object sender, EventArgs e)
@@ -547,6 +553,12 @@ namespace MeetArchiver
         private void editDiverLnk_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             var frm = new EditDiver();
+            frm.Show();
+        }
+
+        private void deleteMeet_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            var frm = new DeleteMeet();
             frm.Show();
         }
     }
