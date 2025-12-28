@@ -30,7 +30,7 @@ namespace DR_APIs.Models
 
         public override string ToString()
         {
-                return $"{Title} ({StartDate:yyyy-MM-dd} to {EndDate:yyyy-MM-dd})";
+                return $"{Title} : {Venue}  -  ({StartDate:yyyy-MM-dd} to {EndDate:yyyy-MM-dd})";
         }
 
         public static List<Meet> ParseMeets(string filePath)
@@ -226,6 +226,39 @@ namespace DR_APIs.Models
             var meet = JsonSerializer.Deserialize<Meet>(responseJson, jsonOptions);
             return meet;
         }
+
+        /// <summary>
+        /// Call the REST service /Meet/GetByGuid and return the Meet if found, or null if not found.
+        /// Throws HttpRequestException for non-success (non-404) responses.
+        /// </summary>
+        public static async Task<List<Meet>> GetByDiverAsync(int diverID, CancellationToken cancellationToken = default)
+        {
+            var httpClientHandler = new HttpClientHandler();
+            httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true;
+
+            var baseUrl = Environment.GetEnvironmentVariable("API_BASE_URL") ?? "https://localhost:7034";
+            var requestUri = $"{baseUrl.TrimEnd('/')}/Meet/GetByDiver?diverId={diverID}";
+
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            using var client = new HttpClient(httpClientHandler);
+            using var response = await client.GetAsync(requestUri, cancellationToken).ConfigureAwait(false);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                return null;
+
+            response.EnsureSuccessStatusCode();
+
+            var responseJson = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+            if (string.IsNullOrWhiteSpace(responseJson)) return null;
+
+            var meets = JsonSerializer.Deserialize<List<Meet>>(responseJson, jsonOptions);
+            return meets;
+        }
+
 
         /// <summary>
         /// Call the REST service /Meet/SearchByTitle to search for meets by title.

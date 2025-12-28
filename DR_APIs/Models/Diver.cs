@@ -1,14 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DR_APIs.Models;
 using Microsoft.VisualBasic.FileIO;
 using System.Globalization;
 using System.Net.Http;
-using System.Reflection;
+using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace DR_APIs.Models
 {
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum RecordStatus { Unassigned, Valid, PossibleMatch, New, Updated};
+    public enum RecordStatus { Unassigned, Valid, PossibleMatch, New, Updated };
+
     public class Diver
     {
         public int ID { get; set; }
@@ -40,9 +42,7 @@ namespace DR_APIs.Models
 
         public RecordStatus RecordStatus { get; set; }
 
-        public List<Diver>  PossibleMatches{ get; set; }
-
-
+        public List<Diver> PossibleMatches { get; set; }
 
         /// <summary>
         /// Parse a CSV file (with header) into a list of <see cref="Diver"/>.
@@ -103,7 +103,6 @@ namespace DR_APIs.Models
 
                     // Ensure lists are initialized to avoid null references elsewhere
                     d.PossibleMatches = new List<Diver>();
-                    //d.Validated = false;
 
                     divers.Add(d);
                 }
@@ -133,7 +132,6 @@ namespace DR_APIs.Models
             return null;
         }
 
-
         public static List<Diver> MissingDivers(List<Diver> listA, List<Diver> listB)
         {
             if (listA is null) throw new ArgumentNullException(nameof(listA));
@@ -157,27 +155,26 @@ namespace DR_APIs.Models
             return result;
         }
 
-
-        public static async Task<List<Diver>> CheckDiversAsync(List<Diver> divers, System.Threading.CancellationToken cancellationToken = default)
+        public static async Task<List<Diver>> CheckDiversAsync(List<Diver> divers, CancellationToken cancellationToken = default)
         {
             if (divers is null) throw new ArgumentNullException(nameof(divers));
 
-            var baseUrl = System.Environment.GetEnvironmentVariable("API_BASE_URL") ?? "https://localhost:7034";
+            var baseUrl = Environment.GetEnvironmentVariable("API_BASE_URL") ?? "https://localhost:7034";
             var requestUri = $"{baseUrl.TrimEnd('/')}/Divers/CheckDivers";
 
-            var jsonOptions = new System.Text.Json.JsonSerializerOptions
+            var jsonOptions = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
 
-            var json = System.Text.Json.JsonSerializer.Serialize(divers, jsonOptions);
+            var json = JsonSerializer.Serialize(divers, jsonOptions);
 
-            using var handler = new System.Net.Http.HttpClientHandler();
+            using var handler = new HttpClientHandler();
             // Accept self-signed certs in dev (only for local/dev use)
             handler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true;
 
-            using var client = new System.Net.Http.HttpClient(handler);
-            using var content = new System.Net.Http.StringContent(json, System.Text.Encoding.UTF8, "application/json");
+            using var client = new HttpClient(handler);
+            using var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             using var response = await client.PostAsync(requestUri, content, cancellationToken).ConfigureAwait(false);
 
@@ -188,34 +185,31 @@ namespace DR_APIs.Models
             if (string.IsNullOrWhiteSpace(responseJson))
                 return new List<Diver>();
 
-            var result = System.Text.Json.JsonSerializer.Deserialize<List<Diver>>(responseJson, jsonOptions);
+            var result = JsonSerializer.Deserialize<List<Diver>>(responseJson, jsonOptions);
 
-            return result;
+            return result ?? new List<Diver>();
         }
 
-        public static async Task<List<Diver>> UpdateDiversAsync(List<Diver> divers, User user, System.Threading.CancellationToken cancellationToken = default)
+        public static async Task<List<Diver>> UpdateDiversAsync(List<Diver> divers, User user, CancellationToken cancellationToken = default)
         {
             var httpClientHandler = new HttpClientHandler();
-            httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) =>
-            {
-                return true;
-            };
+            httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true;
 
             if (divers is null) throw new ArgumentNullException(nameof(divers));
 
             // Base URL can be overridden by setting environment variable API_BASE_URL, otherwise fallback to localhost.
-            var baseUrl = System.Environment.GetEnvironmentVariable("API_BASE_URL") ?? "https://localhost:7034";
+            var baseUrl = Environment.GetEnvironmentVariable("API_BASE_URL") ?? "https://localhost:7034";
             var requestUri = $"{baseUrl.TrimEnd('/')}/Divers/UpdateDivers";
 
-            var jsonOptions = new System.Text.Json.JsonSerializerOptions
+            var jsonOptions = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
 
-            var json = System.Text.Json.JsonSerializer.Serialize(divers, jsonOptions);
+            var json = JsonSerializer.Serialize(divers, jsonOptions);
 
-            using var client = new System.Net.Http.HttpClient(httpClientHandler);
-            using var content = new System.Net.Http.StringContent(json, System.Text.Encoding.UTF8, "application/json");
+            using var client = new HttpClient(httpClientHandler);
+            using var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             client.DefaultRequestHeaders.Add("X-API-KEY", user.APIKey);
             client.DefaultRequestHeaders.Add("X-API-ID", user.UserEmail.ToString());
@@ -228,13 +222,92 @@ namespace DR_APIs.Models
                 throw new UnauthorizedAccessException(responseJson.ToString());
             }
 
-            if(response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
             {
                 throw new Exception(responseJson.ToString());
             }
 
-            var result = System.Text.Json.JsonSerializer.Deserialize<List<Diver>>(responseJson, jsonOptions);
-            return result;
+            var result = JsonSerializer.Deserialize<List<Diver>>(responseJson, jsonOptions);
+            return result ?? new List<Diver>();
+        }
+
+        /// <summary>
+        /// Call the REST service /Divers/MergeDivers to merge two diver records.
+        /// The first diver (survivor) will be kept, and the second diver (casualty) will be deleted.
+        /// All dive sheet references to the casualty will be updated to point to the survivor.
+        /// Returns true on success, throws exceptions on errors.
+        /// </summary>
+        /// <param name="survivor">The diver record to keep (must have ArchiveID)</param>
+        /// <param name="casualty">The diver record to delete (must have ArchiveID)</param>
+        /// <param name="user">User with authentication credentials</param>
+        /// <param name="cancellationToken">Optional cancellation token</param>
+        /// <returns>True if merge was successful</returns>
+        /// <exception cref="ArgumentNullException">Thrown when survivor, casualty, or user is null</exception>
+        /// <exception cref="ArgumentException">Thrown when survivor or casualty don't have ArchiveID</exception>
+        /// <exception cref="UnauthorizedAccessException">Thrown when user lacks permissions</exception>
+        /// <exception cref="HttpRequestException">Thrown for other HTTP errors</exception>
+        public static async Task<bool> MergeDiversAsync(Diver survivor, Diver casualty, User user, CancellationToken cancellationToken = default)
+        {
+            if (survivor is null) throw new ArgumentNullException(nameof(survivor));
+            if (casualty is null) throw new ArgumentNullException(nameof(casualty));
+            if (user is null) throw new ArgumentNullException(nameof(user));
+
+            if (!survivor.ArchiveID.HasValue)
+                throw new ArgumentException("Survivor diver must have an ArchiveID", nameof(survivor));
+            if (!casualty.ArchiveID.HasValue)
+                throw new ArgumentException("Casualty diver must have an ArchiveID", nameof(casualty));
+
+            var httpClientHandler = new HttpClientHandler();
+            httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true;
+
+            var baseUrl = Environment.GetEnvironmentVariable("API_BASE_URL") ?? "https://localhost:7034";
+            var requestUri = $"{baseUrl.TrimEnd('/')}/Divers/MergeDivers";
+
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            // Create a list with exactly 2 divers as expected by the controller
+            var diversToMerge = new List<Diver> { survivor, casualty };
+            var json = JsonSerializer.Serialize(diversToMerge, jsonOptions);
+
+            using var client = new HttpClient(httpClientHandler);
+            using var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            client.DefaultRequestHeaders.Add("X-API-KEY", user.APIKey);
+            client.DefaultRequestHeaders.Add("X-API-ID", user.UserEmail.ToString());
+
+            using var response = await client.PostAsync(requestUri, content, cancellationToken).ConfigureAwait(false);
+
+            var responseJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                throw new UnauthorizedAccessException(responseJson);
+            }
+
+            if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            {
+                throw new HttpRequestException($"Server error during merge: {responseJson}");
+            }
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new HttpRequestException($"HTTP {response.StatusCode}: {responseJson}");
+            }
+
+            // Try to deserialize the boolean result
+            try
+            {
+                var result = JsonSerializer.Deserialize<bool>(responseJson, jsonOptions);
+                return result;
+            }
+            catch
+            {
+                // Fallback: check if response contains "true" (case-insensitive)
+                return responseJson.Trim().Trim('"').Equals("true", StringComparison.OrdinalIgnoreCase);
+            }
         }
     }
 }

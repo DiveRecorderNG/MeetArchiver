@@ -520,6 +520,7 @@
             mergeDiversLnk.TabIndex = 2;
             mergeDiversLnk.TabStop = true;
             mergeDiversLnk.Text = "Merge Divers";
+            mergeDiversLnk.LinkClicked += mergeDiversLnk_LinkClicked;
             // 
             // deleteMeet
             // 

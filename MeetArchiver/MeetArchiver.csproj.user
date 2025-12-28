@@ -25,6 +25,9 @@
     <Compile Update="ManageUser.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="MergeDivers.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="WorkingForm.cs">
       <SubType>Form</SubType>
     </Compile>

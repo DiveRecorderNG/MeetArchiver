@@ -61,6 +61,46 @@ namespace DR_APIs.Controllers
             }
         }
 
+        [HttpGet("GetByDiver")]
+        public ActionResult<List<Meet>> GetByDiver(int diverId)
+        {
+            bool needsClosing = false;
+            try
+            {
+                if (conn.State != ConnectionState.Open)
+                {
+                    conn.Open();
+                    needsClosing = true;
+                }
+
+                const string sql = "select Distinct MRef, SDate, EDate, MTitle, Venue from ME_Meets Inner Join ME_Divesheets on MRef = Meet where DiverA = @diverId;";
+                using var cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@diverId", diverId);
+
+                var dt = new DataTable();
+                using var da = new MySqlDataAdapter(cmd);
+                da.Fill(dt);
+
+                List<Meet> meets = new List<Meet>();
+
+                if (dt.Rows.Count == 0) return NotFound();
+                foreach (DataRow row in dt.Rows)
+                {
+                        meets.Add(MapRowToMeet(row));
+                }
+
+                return Ok(meets);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            finally
+            {
+                if (needsClosing && conn.State == ConnectionState.Open) conn.Close();
+            }
+        }
+
         /// <summary>
         /// Search meets by title using a LIKE search on MTitle.
         /// </summary>

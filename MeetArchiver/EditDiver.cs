@@ -21,7 +21,16 @@ namespace MeetArchiver
         private void searchBtn_Click(object sender, EventArgs e)
         {
             var d = diverCtrl1.PopulateDiverFromControls();
-            d.PossibleMatches = new List<Diver>();
+            if(String.IsNullOrEmpty(d.FirstName)
+                || String.IsNullOrEmpty(d.LastName)
+                || String.IsNullOrEmpty(d.Sex)
+                || d.Born==0)
+            {
+                MessageBox.Show("You must enter at least First Name, Last Name, Sex and Year of Birth to search for a diver.");
+                return;
+            }
+
+                d.PossibleMatches = new List<Diver>();
             var t = Diver.CheckDiversAsync(new List<Diver> { d });
             t.Wait();
             var diverRes = t.Result;

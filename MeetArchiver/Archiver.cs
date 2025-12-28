@@ -561,5 +561,11 @@ namespace MeetArchiver
             var frm = new DeleteMeet();
             frm.Show();
         }
+
+        private void mergeDiversLnk_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            var frm = new MergeDivers();
+            frm.Show();
+        }
     }
 }
