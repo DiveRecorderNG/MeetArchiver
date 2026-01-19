@@ -51,6 +51,7 @@ namespace MeetArchiver.Controls
             txtTCode = new TextBox();
             lblNation = new Label();
             txtNation = new TextBox();
+            clubSearchBtn = new Button();
             ((System.ComponentModel.ISupportInitialize)nudBorn).BeginInit();
             SuspendLayout();
             // 
@@ -137,7 +138,7 @@ namespace MeetArchiver.Controls
             lblSex.Location = new Point(8, 95);
             lblSex.Name = "lblSex";
             lblSex.Size = new Size(104, 26);
-            lblSex.TabIndex = 10; 
+            lblSex.TabIndex = 10;
             lblSex.Text = "Sex";
             lblSex.TextAlign = ContentAlignment.MiddleLeft;
             // 
@@ -233,9 +234,20 @@ namespace MeetArchiver.Controls
             txtNation.TabIndex = 19;
             txtNation.TextChanged += txtNation_TextChanged;
             // 
+            // clubSearchBtn
+            // 
+            clubSearchBtn.Location = new Point(332, 70);
+            clubSearchBtn.Name = "clubSearchBtn";
+            clubSearchBtn.Size = new Size(30, 23);
+            clubSearchBtn.TabIndex = 20;
+            clubSearchBtn.Text = ". . .";
+            clubSearchBtn.UseVisualStyleBackColor = true;
+            clubSearchBtn.Click += clubSearchBtn_Click;
+            // 
             // DiverCtrl
             // 
             BackColor = SystemColors.Control;
+            Controls.Add(clubSearchBtn);
             Controls.Add(txtId);
             Controls.Add(txtArchiveId);
             Controls.Add(lblFirstName);
@@ -273,5 +285,6 @@ namespace MeetArchiver.Controls
             }
             base.Dispose(disposing);
         }
+        private Button clubSearchBtn;
     }
 }

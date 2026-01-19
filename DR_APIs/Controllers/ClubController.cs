@@ -48,6 +48,10 @@ namespace DR_APIs.Controllers
                 c.Representing = row["Representing"].ToString();
                 c.TCode = row["TCode"].ToString(); 
                 c.Validated = true;
+
+                var countClub = CheckClub(c.Representing, c.TCode);
+                c.Count = countClub.First().Count;
+
                 clubs.Add(c);
             }
 
@@ -66,7 +70,7 @@ namespace DR_APIs.Controllers
                 needsClosing = true;
             }
 
-            string sql = "SELECT distinct Representing, TCode FROM ME_Divers WHERE Representing = @representing AND TCode = @tcode";
+            string sql = "SELECT count(*)  FROM ME_Divers WHERE Representing = @representing AND TCode = @tcode";
 
             MySqlCommand cmd = new MySqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@representing", representing);
@@ -78,11 +82,12 @@ namespace DR_APIs.Controllers
             _da.Fill(dt);
 
             List<Club> clubs = new List<Club>();
-            foreach (DataRow row in dt.Rows)
-            {
+            if(Convert.ToInt32( dt.Rows[0][0]) > 0)
+            { 
                 Club c = new Club();
-                c.Representing = row["Representing"].ToString();
-                c.TCode = row["TCode"].ToString();
+                c.Representing = representing;
+                c.TCode = tcode;
+                c.Count = Convert.ToInt32(dt.Rows[0][0]);
                 c.Validated = true;
                 clubs.Add(c);
             }
@@ -103,6 +108,7 @@ namespace DR_APIs.Controllers
                 if(matches.Count() == 1)
                 {
                     clubs[i].Validated = true;
+                    clubs[i].Count = matches[0].Count;
                 }
                 else
                 {
@@ -113,6 +119,37 @@ namespace DR_APIs.Controllers
 
             conn.Close();
             return clubs;
+        }
+
+        [HttpPost("MergeClubs")]
+        public bool MergeClubs(List<Club> clubs)
+        {
+            conn.Open();
+
+            if(!Helpers.IsAdmin(Request, conn))
+            {
+                conn.Close();
+                throw new UnauthorizedAccessException("Admin access required.");
+            }
+
+            if(clubs.Count != 2)
+            {
+                conn.Close();
+                throw new ArgumentException("Must provide exactly two clubs to merge.");
+            }
+
+            string sql = "UPDATE ME_Divers SET Representing = @representing1, TCode=@tcode1 WHERE Representing = @representing2 AND TCode = @tcode2";
+
+            MySqlCommand cmd = new MySqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@representing1", clubs[0].Representing);
+            cmd.Parameters.AddWithValue("@tcode1", clubs[0].TCode);
+            cmd.Parameters.AddWithValue("@representing2", clubs[1].Representing);
+            cmd.Parameters.AddWithValue("@tcode2", clubs[1].TCode);
+
+            cmd.ExecuteNonQuery();
+
+            conn.Close();
+            return true;
         }
 
     }

@@ -6,6 +6,7 @@ namespace DR_APIs.Models
     {
         public string? Representing { get; set; }
         public string? TCode { get; set; }
+        public int Count { get; set; } = 0;
         public bool Validated { get; set; }
 
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using DR_APIs.Models;
 using System.ComponentModel;
+using Org.BouncyCastle.Pqc.Crypto.Frodo;
 
 namespace MeetArchiver.Controls
 {
@@ -13,7 +14,8 @@ namespace MeetArchiver.Controls
         // Public edited instance (a clone of the input to avoid mutating the original)
         public Diver EditedDiver
         {
-            get { 
+            get
+            {
                 return _editedDiver;
             }
             set
@@ -30,6 +32,11 @@ namespace MeetArchiver.Controls
             {
                 _readonly = value;
                 nudBorn.ReadOnly = value;
+                if(_editedDiver != null)
+                {
+                    clubSearchBtn.Visible = !value;
+                }
+
             }
         }
 
@@ -78,7 +85,7 @@ namespace MeetArchiver.Controls
             if (_editedDiver == null) _editedDiver = new Diver();
             Diver diver = _editedDiver;
 
-            diver.FirstName= txtFirstName.Text;
+            diver.FirstName = txtFirstName.Text;
             diver.LastName = txtLastName.Text;
             diver.Representing = txtRepresenting.Text;
             diver.Sex = cmbSex.SelectedItem.ToString();
@@ -86,7 +93,7 @@ namespace MeetArchiver.Controls
             diver.TCode = txtTCode.Text;
             diver.Coach = txtCoach.Text;
             diver.Nation = "";
-            diver.PossibleMatches=new List<Diver>();
+            diver.PossibleMatches = new List<Diver>();
             return diver;
 
         }
@@ -95,7 +102,7 @@ namespace MeetArchiver.Controls
 
         private void DiverCtrl_Load(object sender, EventArgs e)
         {
-            
+
         }
 
         public void HighlightMismatches(Diver dr)
@@ -182,8 +189,7 @@ namespace MeetArchiver.Controls
 
         private void txtRepresenting_TextChanged(object sender, EventArgs e)
         {
-            if (Readonly)
-            {
+
                 if (resetting == true)
                     return;
                 else
@@ -193,7 +199,6 @@ namespace MeetArchiver.Controls
                     Thread.Sleep(100);
                     resetting = false;
                 }
-            }
         }
 
         private void txtCoach_TextChanged(object sender, EventArgs e)
@@ -214,8 +219,6 @@ namespace MeetArchiver.Controls
 
         private void txtTCode_TextChanged(object sender, EventArgs e)
         {
-            if (Readonly)
-            {
                 if (resetting == true)
                     return;
                 else
@@ -225,7 +228,6 @@ namespace MeetArchiver.Controls
                     Thread.Sleep(100);
                     resetting = false;
                 }
-            }
         }
 
         private void txtNation_TextChanged(object sender, EventArgs e)
@@ -261,5 +263,18 @@ namespace MeetArchiver.Controls
             }
         }
 
+        private void clubSearchBtn_Click(object sender, EventArgs e)
+        {
+            SerachClub frm = new SerachClub();
+            frm.ShowDialog();
+            if(frm.SelectedClub == null)
+            {
+                return;
+            }
+            EditedDiver.Representing = frm.SelectedClub.Representing;
+            EditedDiver.TCode= frm.SelectedClub.TCode;
+            txtRepresenting.Text = frm.SelectedClub.Representing;
+            txtTCode.Text = frm.SelectedClub.TCode;
+        }
     }
 }

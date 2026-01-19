@@ -71,6 +71,7 @@
             mergeDiversLnk = new LinkLabel();
             deleteMeet = new LinkLabel();
             editDiverLnk = new LinkLabel();
+            mergeClubLnk = new LinkLabel();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -79,6 +80,8 @@
             meetTab.SuspendLayout();
             diversTab.SuspendLayout();
             clubsTab.SuspendLayout();
+            groupBox1.SuspendLayout();
+            groupBox2.SuspendLayout();
             uploadTab.SuspendLayout();
             adminTab.SuspendLayout();
             SuspendLayout();
@@ -244,12 +247,9 @@
             // 
             clubsTab.Controls.Add(nextClubcBtn);
             clubsTab.Controls.Add(newClubBtn);
-            clubsTab.Controls.Add(findBtn);
             clubsTab.Controls.Add(searchTxt);
             clubsTab.Controls.Add(searchClubLst);
-            clubsTab.Controls.Add(acceptSearchResultBtn);
             clubsTab.Controls.Add(sugestedClubLst);
-            clubsTab.Controls.Add(acceptSuggestionBtn);
             clubsTab.Controls.Add(mismatchedClubsLst);
             clubsTab.Controls.Add(label1);
             clubsTab.Controls.Add(groupBox1);
@@ -283,7 +283,7 @@
             // 
             // findBtn
             // 
-            findBtn.Location = new Point(574, 229);
+            findBtn.Location = new Point(347, 51);
             findBtn.Name = "findBtn";
             findBtn.Size = new Size(75, 23);
             findBtn.TabIndex = 11;
@@ -295,7 +295,7 @@
             // 
             searchTxt.Location = new Point(332, 229);
             searchTxt.Name = "searchTxt";
-            searchTxt.Size = new Size(222, 23);
+            searchTxt.Size = new Size(325, 23);
             searchTxt.TabIndex = 10;
             // 
             // searchClubLst
@@ -304,12 +304,12 @@
             searchClubLst.ItemHeight = 15;
             searchClubLst.Location = new Point(332, 272);
             searchClubLst.Name = "searchClubLst";
-            searchClubLst.Size = new Size(222, 94);
+            searchClubLst.Size = new Size(325, 94);
             searchClubLst.TabIndex = 9;
             // 
             // acceptSearchResultBtn
             // 
-            acceptSearchResultBtn.Location = new Point(574, 272);
+            acceptSearchResultBtn.Location = new Point(347, 94);
             acceptSearchResultBtn.Name = "acceptSearchResultBtn";
             acceptSearchResultBtn.Size = new Size(75, 23);
             acceptSearchResultBtn.TabIndex = 8;
@@ -323,12 +323,12 @@
             sugestedClubLst.ItemHeight = 15;
             sugestedClubLst.Location = new Point(332, 49);
             sugestedClubLst.Name = "sugestedClubLst";
-            sugestedClubLst.Size = new Size(222, 94);
+            sugestedClubLst.Size = new Size(325, 94);
             sugestedClubLst.TabIndex = 6;
             // 
             // acceptSuggestionBtn
             // 
-            acceptSuggestionBtn.Location = new Point(574, 49);
+            acceptSuggestionBtn.Location = new Point(347, 24);
             acceptSuggestionBtn.Name = "acceptSuggestionBtn";
             acceptSuggestionBtn.Size = new Size(75, 23);
             acceptSuggestionBtn.TabIndex = 5;
@@ -357,18 +357,21 @@
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(acceptSearchResultBtn);
+            groupBox1.Controls.Add(findBtn);
             groupBox1.Location = new Point(316, 178);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(360, 206);
+            groupBox1.Size = new Size(441, 206);
             groupBox1.TabIndex = 12;
             groupBox1.TabStop = false;
             groupBox1.Text = "Manual club search";
             // 
             // groupBox2
             // 
+            groupBox2.Controls.Add(acceptSuggestionBtn);
             groupBox2.Location = new Point(316, 25);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(362, 134);
+            groupBox2.Size = new Size(441, 134);
             groupBox2.TabIndex = 13;
             groupBox2.TabStop = false;
             groupBox2.Text = "Suggested clubs";
@@ -473,6 +476,7 @@
             // 
             // adminTab
             // 
+            adminTab.Controls.Add(mergeClubLnk);
             adminTab.Controls.Add(addUserKey);
             adminTab.Controls.Add(resetKeyLnk);
             adminTab.Controls.Add(mergeDiversLnk);
@@ -546,6 +550,18 @@
             editDiverLnk.Text = "Edit Diver";
             editDiverLnk.LinkClicked += editDiverLnk_LinkClicked;
             // 
+            // mergeClubLnk
+            // 
+            mergeClubLnk.AutoSize = true;
+            mergeClubLnk.Font = new Font("Segoe UI", 12F);
+            mergeClubLnk.Location = new Point(17, 206);
+            mergeClubLnk.Name = "mergeClubLnk";
+            mergeClubLnk.Size = new Size(98, 21);
+            mergeClubLnk.TabIndex = 5;
+            mergeClubLnk.TabStop = true;
+            mergeClubLnk.Text = "Merge Clubs";
+            mergeClubLnk.LinkClicked += mergeClubLnk_LinkClicked;
+            // 
             // Archiver
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -567,6 +583,8 @@
             diversTab.PerformLayout();
             clubsTab.ResumeLayout(false);
             clubsTab.PerformLayout();
+            groupBox1.ResumeLayout(false);
+            groupBox2.ResumeLayout(false);
             uploadTab.ResumeLayout(false);
             uploadTab.PerformLayout();
             adminTab.ResumeLayout(false);
@@ -617,5 +635,6 @@
         private LinkLabel editDiverLnk;
         private LinkLabel resetKeyLnk;
         private LinkLabel addUserKey;
+        private LinkLabel mergeClubLnk;
     }
 }

@@ -498,6 +498,13 @@ namespace MeetArchiver
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
+
+
+            if (tabControl1.SelectedTab == meetTab)
+            {
+                InstructionLbl.Text = "Step 1: Select meet for archiving";
+            }
+
             if (tabControl1.SelectedTab == clubsTab)
             {
                 CheckClubData(sender, e);
@@ -566,6 +573,13 @@ namespace MeetArchiver
         {
             var frm = new MergeDivers();
             frm.Show();
+        }
+
+        private void mergeClubLnk_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            var frm= new MergeClubs();
+            frm.ShowDialog();
+
         }
     }
 }

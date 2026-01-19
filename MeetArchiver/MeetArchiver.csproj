@@ -8,6 +8,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Title>Diver Recorder Archiver</Title>
     <Authors>DRTeam</Authors>
+    <StartupObject>MeetArchiver.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
