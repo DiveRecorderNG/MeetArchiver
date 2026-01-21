@@ -99,7 +99,7 @@ namespace MeetArchiver
                 MessageBox.Show($"Error parsing diver: {ex.Message}");
             }
 
-            var diveSheetFile = Path.Combine(dataFolder, "DiveSheetsTable");
+            var diveSheetFile = Path.Combine(dataFolder, "DiveSheetTable");
 
             if (!File.Exists(diveSheetFile))
             {
