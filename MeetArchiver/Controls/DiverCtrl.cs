@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using DR_APIs.Models;
 using System.ComponentModel;
 using Org.BouncyCastle.Pqc.Crypto.Frodo;
+using System.Linq.Expressions;
 
 namespace MeetArchiver.Controls
 {
@@ -32,7 +33,7 @@ namespace MeetArchiver.Controls
             {
                 _readonly = value;
                 nudBorn.ReadOnly = value;
-                if(_editedDiver != null)
+                if (_editedDiver != null)
                 {
                     clubSearchBtn.Visible = !value;
                 }
@@ -107,50 +108,57 @@ namespace MeetArchiver.Controls
 
         public void HighlightMismatches(Diver dr)
         {
+            try
+            {
 
-            if (_editedDiver.FirstName != dr.FirstName)
-            {
-                txtFirstName.BackColor = Color.Orange;
-            }
-            else
-            {
-                txtFirstName.BackColor = SystemColors.ControlLightLight;
-            }
+                if (_editedDiver.FirstName.ToLower() != dr.FirstName.ToLower())
+                {
+                    txtFirstName.BackColor = Color.Orange;
+                }
+                else
+                {
+                    txtFirstName.BackColor = SystemColors.ControlLightLight;
+                }
 
-            if (_editedDiver.LastName != dr.LastName)
-            {
-                txtLastName.BackColor = Color.Orange;
-            }
-            else
-            {
-                txtLastName.BackColor = SystemColors.ControlLightLight;
-            }
+                if (_editedDiver.LastName.ToLower() != dr.LastName.ToLower())
+                {
+                    txtLastName.BackColor = Color.Orange;
+                }
+                else
+                {
+                    txtLastName.BackColor = SystemColors.ControlLightLight;
+                }
 
-            if (_editedDiver.Born != dr.Born)
-            {
-                nudBorn.BackColor = Color.Orange;
-            }
-            else
-            {
-                nudBorn.BackColor = SystemColors.ControlLightLight;
-            }
+                if (_editedDiver.Born != dr.Born)
+                {
+                    nudBorn.BackColor = Color.Orange;
+                }
+                else
+                {
+                    nudBorn.BackColor = SystemColors.ControlLightLight;
+                }
 
-            if (_editedDiver.Representing != dr.Representing)
-            {
-                txtRepresenting.BackColor = Color.Orange;
-            }
-            else
-            {
-                txtRepresenting.BackColor = SystemColors.ControlLightLight;
-            }
+                if (_editedDiver.Representing.ToLower() != dr.Representing.ToLower())
+                {
+                    txtRepresenting.BackColor = Color.Orange;
+                }
+                else
+                {
+                    txtRepresenting.BackColor = SystemColors.ControlLightLight;
+                }
 
-            if (_editedDiver.Sex != dr.Sex)
-            {
-                cmbSex.BackColor = Color.Orange;
+                if (_editedDiver.Sex != dr.Sex)
+                {
+                    cmbSex.BackColor = Color.Orange;
+                }
+                else
+                {
+                    cmbSex.BackColor = SystemColors.ControlLightLight;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                cmbSex.BackColor = SystemColors.ControlLightLight;
+                MessageBox.Show("Error highlighting mismatches: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
         }
