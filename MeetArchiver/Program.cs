@@ -16,19 +16,19 @@ namespace MeetArchiver
         [STAThread]
         static void Main()
         {
-            //try
-            //{
-            //    CountryCode = new Locaton().GetCountryByIP();
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show("Error determining location: Please make sure you have an active internet connection before trying again.", "Network connection error");
-            //    return;
-            //}
+            try
+            {
+                CountryCode = new Locaton().GetCountryByIP();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error determining location: Please make sure you have an active internet connection before trying again.", "Network connection error");
+                return;
+            }
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
 
-            //System.Environment.SetEnvironmentVariable("API_BASE_URL", Properties.Settings.Default.DRServiceURL);
+            System.Environment.SetEnvironmentVariable("API_BASE_URL", Properties.Settings.Default.DRServiceURL);
 
             ApplicationConfiguration.Initialize();
             Application.Run(new Archiver());

@@ -141,7 +141,7 @@ namespace MeetArchiver
 
             selectedMeet = meets[meetsList.SelectedIndex];
             selectedEvents = events.Where(ev => ev.MeetRef == selectedMeet.MRef).ToList();
-            selectedDiveSheets = diveSheets.Where(ds => selectedEvents.Any(ev => ev.ERef == ds.Event)).ToList();
+            selectedDiveSheets = diveSheets.Where(ds => selectedEvents.Any(ev => ev.ERef == ds.Event && ds.Meet == selectedMeet.MRef)).ToList();
             selectedDivers = divers.Where(dv => selectedDiveSheets.Any(ds => ds.DiverA == dv.ID || ds.DiverB == dv.ID)).ToList();
 
 
