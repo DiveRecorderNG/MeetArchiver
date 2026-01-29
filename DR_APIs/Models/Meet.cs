@@ -8,6 +8,7 @@ using System.Text.Json;
 
 namespace DR_APIs.Models
 {
+
     public class Meet
     {
         public int MRef { get; set; }
@@ -27,6 +28,8 @@ namespace DR_APIs.Models
         // CSV uses 0/1 for this column; expose as bool for clarity
         public bool International { get; set; }
         public string? MeetGUID { get; set; }
+        public List<Diver>? Divers { get; set; }
+        public List<Event>? Events { get; set; }
 
         public override string ToString()
         {

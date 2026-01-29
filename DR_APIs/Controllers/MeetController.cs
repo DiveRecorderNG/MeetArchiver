@@ -62,6 +62,87 @@ namespace DR_APIs.Controllers
         }
 
 
+        [HttpGet("GetCompleteById")]
+        public ActionResult<Meet> GetCompleteById(int meetId)
+        {
+            bool needsClosing = false;
+            try
+            {
+                if (conn.State != ConnectionState.Open)
+                {
+                    conn.Open();
+                    needsClosing = true;
+                }
+
+                const string sql = "SELECT * FROM ME_Meets WHERE MRef = @MeetId LIMIT 1;";
+                using var cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@MeetId", meetId);
+
+                var dt = new DataTable();
+                using var da = new MySqlDataAdapter(cmd);
+                da.Fill(dt);
+
+                if (dt.Rows.Count == 0) return NotFound();
+
+                var meet = MapRowToMeet(dt.Rows[0]);
+
+                var ec = new EventController(_config);
+                var res = (List<Event>)((ObjectResult)ec.GetCompleteByMeetRef(meet.MRef).Result).Value;
+                meet.Events = res;
+
+                var dc = new DiversController(_config);
+                var res2 = (List<Diver>)((ObjectResult)dc.GetDiversForMeet(meet.MRef).Result).Value;
+                meet.Divers = res2;
+
+
+                return Ok(meet);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            finally
+            {
+                if (needsClosing && conn.State == ConnectionState.Open) conn.Close();
+            }
+        }
+
+        [HttpGet("GetById")]
+        public ActionResult<Meet> GetById(int meetId)
+        {
+            
+            bool needsClosing = false;
+            try
+            {
+                if (conn.State != ConnectionState.Open)
+                {
+                    conn.Open();
+                    needsClosing = true;
+                }
+
+                const string sql = "SELECT * FROM ME_Meets WHERE MRef = @MeetId LIMIT 1;";
+                using var cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@MeetId", meetId);
+
+                var dt = new DataTable();
+                using var da = new MySqlDataAdapter(cmd);
+                da.Fill(dt);
+
+                if (dt.Rows.Count == 0) return NotFound();
+
+                var meet = MapRowToMeet(dt.Rows[0]);
+                return Ok(meet);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            finally
+            {
+                if (needsClosing && conn.State == ConnectionState.Open) conn.Close();
+            }
+        }
+
 
 
         [HttpGet("GetByDiver")]

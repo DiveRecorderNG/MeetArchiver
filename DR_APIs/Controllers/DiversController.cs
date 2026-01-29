@@ -23,6 +23,52 @@ namespace DR_APIs.Controllers
             conn.ConnectionString = ConnectionString;
         }
 
+
+        [HttpGet("GetDiversForMeet")]
+        public ActionResult<List<Diver>> GetDiversForMeet(int MRef)
+        {
+
+            bool needsClosing = false;
+            if (conn.State != ConnectionState.Open)
+            {
+                conn.Open();
+                needsClosing = true;
+            }
+
+            string sql = "SELECT distinct ME_Divers.* FROM ME_Divers INNER JOIN ME_Divesheets on ME_Divers.DRef=ME_Divesheets.DiverA OR ME_Divers.DRef=ME_Divesheets.DiverB  WHERE ME_Divesheets.Meet=@MRef ";
+
+
+            MySqlCommand cmd = new MySqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@MRef",MRef);
+
+
+            DataTable dt = new DataTable();
+
+            var _da = new MySqlDataAdapter(cmd);
+            _da.Fill(dt);
+
+            List<Diver> divers = new List<Diver>();
+            foreach (DataRow row in dt.Rows)
+            {
+                Diver diver = new Diver();
+                diver.ArchiveID = Convert.ToInt32(row["DRef"]);
+                diver.FirstName = row["FirstName"].ToString();
+                diver.LastName = row["LastName"].ToString();
+                diver.Sex = row["Sex"].ToString();
+                diver.Born = Convert.ToInt32(row["Born"]);
+                diver.Representing = row["Representing"].ToString();
+                diver.TCode = row["TCode"].ToString();
+                diver.RecordStatus = RecordStatus.Valid;
+                diver.PossibleMatches = new List<Diver>();
+                divers.Add(diver);
+            }
+            if (needsClosing)
+                conn.Close();
+            return Ok(divers);
+        }
+
+
+
         [HttpGet("GetDiver")]
         public ActionResult<List<Diver>> GetDiver(string FirstName, string LastName, int Born, string Sex)
         {

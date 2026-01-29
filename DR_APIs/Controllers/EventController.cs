@@ -208,7 +208,7 @@ namespace DR_APIs.Controllers
                     needsClosing = true;
                 }
 
-                const string sql = "SELECT * FROM ME_Events WHERE MeetRef = @MeetRef ORDER BY EventRef;";
+                const string sql = "SELECT * FROM ME_Events WHERE MeetRef = @MeetRef ORDER BY ERef;";
                 using var cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@MeetRef", meetRef);
 
@@ -233,6 +233,66 @@ namespace DR_APIs.Controllers
                 if (needsClosing && conn.State == ConnectionState.Open) conn.Close();
             }
         }
+        /// <summary>
+        /// Return all events for a given MeetRef (parameterized).
+        /// </summary>
+        [HttpGet("GetCompleteByMeetRef")]
+        public ActionResult<List<Event>> GetCompleteByMeetRef(int meetRef)
+        {
+            bool needsClosing = false;
+            try
+            {
+                if (conn.State != ConnectionState.Open)
+                {
+                    conn.Open();
+                    needsClosing = true;
+                }
+
+                const string sql = "SELECT * FROM ME_Events WHERE MeetRef = @MeetRef ORDER BY ERef;";
+                using var cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@MeetRef", meetRef);
+
+                var dt = new DataTable();
+                using var da = new MySqlDataAdapter(cmd);
+                da.Fill(dt);
+
+                var results = new List<Event>(dt.Rows.Count);
+                foreach (DataRow row in dt.Rows)
+                {
+                    var completeEvent = MapRowToEvent(row);
+
+                    DataTable dt2 = new DataTable();
+                    string dsQuery = "SELECT * FROM ME_Divesheets WHERE `Event` = @EKey AND Meet = @MKey ORDER BY `Round`, `StartOrder`;";
+                    using var cmd2 = new MySqlCommand(dsQuery, conn);
+                    cmd2.Parameters.AddWithValue("@MKey", meetRef);
+                    cmd2.Parameters.AddWithValue("@EKey", completeEvent.ERef);
+                    var da2 = new MySqlDataAdapter(cmd2);
+                    da2.Fill(dt2);
+
+                    var results2 = new List<DiveSheet>(dt2.Rows.Count);
+                    foreach (DataRow row2 in dt2.Rows)
+                    {
+                        results2.Add(DiveSheetController.MapRowToDiveSheet(row2));
+                    }
+
+                    completeEvent.Divesheets = results2;
+
+                    results.Add(completeEvent);
+                }
+
+
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            finally
+            {
+                if (needsClosing && conn.State == ConnectionState.Open) conn.Close();
+            }
+        }
+
 
         private static Event MapRowToEvent(DataRow row)
         {
@@ -241,8 +301,8 @@ namespace DR_APIs.Controllers
             if (row.Table.Columns.Contains("MeetRef") && row["MeetRef"] != DBNull.Value)
                 ev.MeetRef = Convert.ToInt32(row["MeetRef"]);
 
-            if (row.Table.Columns.Contains("EventRef") && row["EventRef"] != DBNull.Value)
-                ev.ERef = Convert.ToInt32(row["EventRef"]);
+            if (row.Table.Columns.Contains("ERef") && row["ERef"] != DBNull.Value)
+                ev.ERef = Convert.ToInt32(row["ERef"]);
 
             if (row.Table.Columns.Contains("ArchiveERef") && row["ArchiveERef"] != DBNull.Value)
                 ev.ArchiveERef = Convert.ToInt32(row["ArchiveERef"]);

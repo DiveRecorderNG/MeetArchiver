@@ -5,6 +5,8 @@ using System.Text.Json;
 
 namespace DR_APIs.Models
 {
+
+
     public class Event
     {
         public int MeetRef { get; set; }
@@ -83,6 +85,7 @@ namespace DR_APIs.Models
         public bool? DoNotRank { get; set; }
         public bool? TeamEvent { get; set; }
 
+        public List<DiveSheet>? Divesheets { get; set; }
 
         /// <summary>
         /// Parse a CSV file (with header) into a list of <see cref="Event"/>.

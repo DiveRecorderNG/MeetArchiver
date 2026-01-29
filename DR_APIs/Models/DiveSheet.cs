@@ -21,7 +21,7 @@ namespace DR_APIs.Models
 
         public int? DiveNo { get; set; }
         public string? Position { get; set; }
-        public int? Board { get; set; }
+        public decimal? Board { get; set; }
 
         public decimal? Tariff { get; set; }
 
@@ -124,7 +124,7 @@ namespace DR_APIs.Models
 
                     DiveNo = ParseInt(GetField("DiveNo")),
                     Position = NullIfEmpty(GetField("Position")),
-                    Board = ParseNullableInt(GetField("Board")),
+                    Board = ParseNullableDecimal(GetField("Board")),
 
                     Tariff = ParseNullableDecimal(GetField("Tariff")),
 

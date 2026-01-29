@@ -235,7 +235,7 @@ VALUES
             }
         }
 
-        private static DiveSheet MapRowToDiveSheet(DataRow row)
+        public static DiveSheet MapRowToDiveSheet(DataRow row)
         {
             var d = new DiveSheet();
 
