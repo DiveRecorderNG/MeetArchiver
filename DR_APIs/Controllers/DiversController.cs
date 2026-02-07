@@ -113,6 +113,7 @@ namespace DR_APIs.Controllers
                 diver.Born = Convert.ToInt32(row["Born"]);
                 diver.Representing = row["Representing"].ToString();
                 diver.TCode = row["TCode"].ToString();
+                diver.Nation = row["Nation"].ToString();
                 diver.RecordStatus = RecordStatus.Valid;
                 diver.PossibleMatches = new List<Diver>();
                 divers.Add(diver);
@@ -155,6 +156,7 @@ namespace DR_APIs.Controllers
                 diver.Born = Convert.ToInt32(row["Born"]);
                 diver.Representing = row["Representing"].ToString();
                 diver.TCode = row["TCode"].ToString();
+                diver.Nation = row["Nation"].ToString();
                 diver.RecordStatus = RecordStatus.PossibleMatch;
                 diver.PossibleMatches = new List<Diver>();
                 divers.Add(diver);

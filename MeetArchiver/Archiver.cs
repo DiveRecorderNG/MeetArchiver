@@ -133,6 +133,10 @@ namespace MeetArchiver
             if (meetsList.SelectedIndex == -1)
                 return;
 
+            var DialogResult = MessageBox.Show("Is this an International Meet? Only answer yes if all divers are representing their nation.", "International Meet?", MessageBoxButtons.YesNo);
+            if (DialogResult == DialogResult.Yes)
+                internationalChk.Checked = true;
+
             // find diver with ID 0 and delete. This is only in here cos you can't have null in the DB and dive sheets
             // require a DiverB so this is a dummy entry 
             divers.RemoveAll(dv => dv.ID == 0);
@@ -174,6 +178,15 @@ namespace MeetArchiver
             WorkingForm.Close();
 
             RebuildDiverLists(checkedDivers);
+
+            if (internationalChk.Checked)
+            {
+                tabControl1.TabPages.Remove(clubsTab);
+            }
+            else
+            {
+                tabControl1.TabPages.Remove(nationsTab);
+            }
         }
 
         private void RebuildDiverLists(List<Diver> chekkedDivers)
@@ -210,10 +223,17 @@ namespace MeetArchiver
             if (mismatchedDivers.Count == 0)
             {
                 typoList.BackColor = SystemColors.Window;
-                var result = MessageBox.Show("All Mismatched divers are now resolved, would you like to move onto fixing Club errors", "Diver cleansing complete", MessageBoxButtons.YesNo);
+                var result = MessageBox.Show("All Mismatched divers are now resolved, would you like to move onto fixing representation errors", "Diver cleansing complete", MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)
                 {
-                    tabControl1.SelectedTab = clubsTab;
+                    if (!internationalChk.Checked)
+                    {
+                        tabControl1.SelectedTab = clubsTab;
+                    }
+                    else
+                    {
+                        tabControl1.SelectedTab = nationsTab;
+                    }
                 }
             }
 
@@ -516,6 +536,12 @@ namespace MeetArchiver
                 InstructionLbl.Text = "Step 2: Review the list of Mismatched divers below. These divers are in the local dataset but are similar to divers found in the central database.\nClick diver to edit.";
             }
 
+            if (tabControl1.SelectedTab == nationsTab)
+            {
+                LoadNations(sender, e);
+                InstructionLbl.Text = "Step 3: Review the list of unassigned nations below. All divers must be assigned a Nation before archiving is allowed.";
+            }
+
             if (tabControl1.SelectedTab == uploadTab)
             {
                 // Set location for nation combo box
@@ -577,9 +603,62 @@ namespace MeetArchiver
 
         private void mergeClubLnk_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            var frm= new MergeClubs();
+            var frm = new MergeClubs();
             frm.ShowDialog();
 
+        }
+
+        private void LoadNations(object sender, EventArgs e)
+        {
+            ArchiveNationsDataGrid.Rows.Clear();
+            foreach (Diver diver in checkedDivers)
+            {
+                if (!String.IsNullOrWhiteSpace(diver.Nation))
+                {
+                    continue;
+                }
+                string name = diver.FullName;
+                string club = diver.Representing;
+                string nationArchive = diver.Nation;
+                string representingLocal = selectedDivers.Where(d => d.ID == diver.ID).ToList()[0].Representing;
+                ArchiveNationsDataGrid.Rows.Add(name, club, nationArchive, representingLocal);
+            }
+
+            foreach (Diver diver in newDivers)
+            {
+                if (!String.IsNullOrWhiteSpace(diver.Nation))
+                {
+                    continue;
+                }
+                string name = diver.FullName;
+                string club = diver.Representing;
+                string nationArchive = diver.Nation;
+                string representingLocal = selectedDivers.Where(d => d.ID == diver.ID).ToList()[0].Representing;
+                ArchiveNationsDataGrid.Rows.Add(name, club, nationArchive, representingLocal);
+            }
+        }
+
+        private void assignNationsBtn_Click(object sender, EventArgs e)
+        {
+
+            foreach (Diver diver in checkedDivers)
+            {
+                if (!String.IsNullOrWhiteSpace(diver.Nation))
+                {
+                    continue;
+                }
+                diver.Nation = selectedDivers.Where(d => d.ID == diver.ID).ToList()[0].Representing;
+            }
+
+            foreach (Diver diver in newDivers)
+            {
+                if (!String.IsNullOrWhiteSpace(diver.Nation))
+                {
+                    continue;
+                }
+                diver.Nation = selectedDivers.Where(d => d.ID == diver.ID).ToList()[0].Representing;
+            }
+            LoadNations(sender, e);
         }
     }
 }

@@ -83,6 +83,7 @@ namespace MeetArchiver
             _currDiver.Representing = suggestedDiverCtrl.EditedDiver.Representing;
             _currDiver.TCode = suggestedDiverCtrl.EditedDiver.TCode;
             _currDiver.ArchiveID = suggestedDiverCtrl.EditedDiver.ArchiveID;
+            _currDiver.Nation = suggestedDiverCtrl.EditedDiver.Nation;
             _currDiver.RecordStatus = RecordStatus.Valid;
             this.Close();
         }

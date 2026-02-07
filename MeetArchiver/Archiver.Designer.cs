@@ -46,16 +46,25 @@
             clubsTab = new TabPage();
             nextClubcBtn = new Button();
             newClubBtn = new Button();
-            findBtn = new Button();
             searchTxt = new TextBox();
             searchClubLst = new ListBox();
-            acceptSearchResultBtn = new Button();
             sugestedClubLst = new ListBox();
-            acceptSuggestionBtn = new Button();
             mismatchedClubsLst = new ListBox();
             label1 = new Label();
             groupBox1 = new GroupBox();
+            acceptSearchResultBtn = new Button();
+            findBtn = new Button();
             groupBox2 = new GroupBox();
+            acceptSuggestionBtn = new Button();
+            nationsTab = new TabPage();
+            label4 = new Label();
+            textBox1 = new TextBox();
+            assignNationsBtn = new Button();
+            ArchiveNationsDataGrid = new DataGridView();
+            DiverName = new DataGridViewTextBoxColumn();
+            DiversClub = new DataGridViewTextBoxColumn();
+            NationArchive = new DataGridViewTextBoxColumn();
+            RepresentingLocal = new DataGridViewTextBoxColumn();
             uploadTab = new TabPage();
             nationDescriptionTxt = new TextBox();
             internationalDescriptionTxt = new TextBox();
@@ -66,12 +75,12 @@
             logTxtBox = new RichTextBox();
             archiveBtn = new Button();
             adminTab = new TabPage();
+            mergeClubLnk = new LinkLabel();
             addUserKey = new LinkLabel();
             resetKeyLnk = new LinkLabel();
             mergeDiversLnk = new LinkLabel();
             deleteMeet = new LinkLabel();
             editDiverLnk = new LinkLabel();
-            mergeClubLnk = new LinkLabel();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -82,6 +91,8 @@
             clubsTab.SuspendLayout();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
+            nationsTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)ArchiveNationsDataGrid).BeginInit();
             uploadTab.SuspendLayout();
             adminTab.SuspendLayout();
             SuspendLayout();
@@ -121,6 +132,7 @@
             tabControl1.Controls.Add(meetTab);
             tabControl1.Controls.Add(diversTab);
             tabControl1.Controls.Add(clubsTab);
+            tabControl1.Controls.Add(nationsTab);
             tabControl1.Controls.Add(uploadTab);
             tabControl1.Controls.Add(adminTab);
             tabControl1.Dock = DockStyle.Fill;
@@ -281,16 +293,6 @@
             newClubBtn.Text = "Create new Club";
             newClubBtn.UseVisualStyleBackColor = true;
             // 
-            // findBtn
-            // 
-            findBtn.Location = new Point(347, 51);
-            findBtn.Name = "findBtn";
-            findBtn.Size = new Size(75, 23);
-            findBtn.TabIndex = 11;
-            findBtn.Text = "Find";
-            findBtn.UseVisualStyleBackColor = true;
-            findBtn.Click += findBtn_Click;
-            // 
             // searchTxt
             // 
             searchTxt.Location = new Point(332, 229);
@@ -307,16 +309,6 @@
             searchClubLst.Size = new Size(325, 94);
             searchClubLst.TabIndex = 9;
             // 
-            // acceptSearchResultBtn
-            // 
-            acceptSearchResultBtn.Location = new Point(347, 94);
-            acceptSearchResultBtn.Name = "acceptSearchResultBtn";
-            acceptSearchResultBtn.Size = new Size(75, 23);
-            acceptSearchResultBtn.TabIndex = 8;
-            acceptSearchResultBtn.Text = "Accept";
-            acceptSearchResultBtn.UseVisualStyleBackColor = true;
-            acceptSearchResultBtn.Click += acceptSearchResultBtn_Click;
-            // 
             // sugestedClubLst
             // 
             sugestedClubLst.FormattingEnabled = true;
@@ -325,16 +317,6 @@
             sugestedClubLst.Name = "sugestedClubLst";
             sugestedClubLst.Size = new Size(325, 94);
             sugestedClubLst.TabIndex = 6;
-            // 
-            // acceptSuggestionBtn
-            // 
-            acceptSuggestionBtn.Location = new Point(347, 24);
-            acceptSuggestionBtn.Name = "acceptSuggestionBtn";
-            acceptSuggestionBtn.Size = new Size(75, 23);
-            acceptSuggestionBtn.TabIndex = 5;
-            acceptSuggestionBtn.Text = "Accept";
-            acceptSuggestionBtn.UseVisualStyleBackColor = true;
-            acceptSuggestionBtn.Click += acceptSuggestionBtn_Click;
             // 
             // mismatchedClubsLst
             // 
@@ -366,6 +348,26 @@
             groupBox1.TabStop = false;
             groupBox1.Text = "Manual club search";
             // 
+            // acceptSearchResultBtn
+            // 
+            acceptSearchResultBtn.Location = new Point(347, 94);
+            acceptSearchResultBtn.Name = "acceptSearchResultBtn";
+            acceptSearchResultBtn.Size = new Size(75, 23);
+            acceptSearchResultBtn.TabIndex = 8;
+            acceptSearchResultBtn.Text = "Accept";
+            acceptSearchResultBtn.UseVisualStyleBackColor = true;
+            acceptSearchResultBtn.Click += acceptSearchResultBtn_Click;
+            // 
+            // findBtn
+            // 
+            findBtn.Location = new Point(347, 51);
+            findBtn.Name = "findBtn";
+            findBtn.Size = new Size(75, 23);
+            findBtn.TabIndex = 11;
+            findBtn.Text = "Find";
+            findBtn.UseVisualStyleBackColor = true;
+            findBtn.Click += findBtn_Click;
+            // 
             // groupBox2
             // 
             groupBox2.Controls.Add(acceptSuggestionBtn);
@@ -375,6 +377,102 @@
             groupBox2.TabIndex = 13;
             groupBox2.TabStop = false;
             groupBox2.Text = "Suggested clubs";
+            // 
+            // acceptSuggestionBtn
+            // 
+            acceptSuggestionBtn.Location = new Point(347, 24);
+            acceptSuggestionBtn.Name = "acceptSuggestionBtn";
+            acceptSuggestionBtn.Size = new Size(75, 23);
+            acceptSuggestionBtn.TabIndex = 5;
+            acceptSuggestionBtn.Text = "Accept";
+            acceptSuggestionBtn.UseVisualStyleBackColor = true;
+            acceptSuggestionBtn.Click += acceptSuggestionBtn_Click;
+            // 
+            // nationsTab
+            // 
+            nationsTab.Controls.Add(label4);
+            nationsTab.Controls.Add(textBox1);
+            nationsTab.Controls.Add(assignNationsBtn);
+            nationsTab.Controls.Add(ArchiveNationsDataGrid);
+            nationsTab.Location = new Point(4, 24);
+            nationsTab.Name = "nationsTab";
+            nationsTab.Padding = new Padding(3);
+            nationsTab.Size = new Size(1114, 507);
+            nationsTab.TabIndex = 5;
+            nationsTab.Text = "Nations";
+            nationsTab.UseVisualStyleBackColor = true;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(24, 16);
+            label4.Name = "label4";
+            label4.Size = new Size(161, 15);
+            label4.TabIndex = 7;
+            label4.Text = "Divers without a Nation entry";
+            // 
+            // textBox1
+            // 
+            textBox1.Location = new Point(715, 284);
+            textBox1.Multiline = true;
+            textBox1.Name = "textBox1";
+            textBox1.Size = new Size(264, 169);
+            textBox1.TabIndex = 6;
+            textBox1.Text = resources.GetString("textBox1.Text");
+            // 
+            // assignNationsBtn
+            // 
+            assignNationsBtn.Location = new Point(715, 459);
+            assignNationsBtn.Name = "assignNationsBtn";
+            assignNationsBtn.Size = new Size(75, 23);
+            assignNationsBtn.TabIndex = 5;
+            assignNationsBtn.Text = "Assign";
+            assignNationsBtn.UseVisualStyleBackColor = true;
+            assignNationsBtn.Click += assignNationsBtn_Click;
+            // 
+            // ArchiveNationsDataGrid
+            // 
+            ArchiveNationsDataGrid.AllowUserToAddRows = false;
+            ArchiveNationsDataGrid.AllowUserToDeleteRows = false;
+            ArchiveNationsDataGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            ArchiveNationsDataGrid.Columns.AddRange(new DataGridViewColumn[] { DiverName, DiversClub, NationArchive, RepresentingLocal });
+            ArchiveNationsDataGrid.Location = new Point(24, 34);
+            ArchiveNationsDataGrid.Name = "ArchiveNationsDataGrid";
+            ArchiveNationsDataGrid.ReadOnly = true;
+            ArchiveNationsDataGrid.Size = new Size(664, 447);
+            ArchiveNationsDataGrid.TabIndex = 4;
+            // 
+            // DiverName
+            // 
+            DiverName.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            DiverName.HeaderText = "Name";
+            DiverName.Name = "DiverName";
+            DiverName.ReadOnly = true;
+            DiverName.Width = 64;
+            // 
+            // DiversClub
+            // 
+            DiversClub.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            DiversClub.HeaderText = "Club";
+            DiversClub.Name = "DiversClub";
+            DiversClub.ReadOnly = true;
+            DiversClub.Width = 57;
+            // 
+            // NationArchive
+            // 
+            NationArchive.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            NationArchive.HeaderText = "Nation Archive";
+            NationArchive.Name = "NationArchive";
+            NationArchive.ReadOnly = true;
+            NationArchive.Width = 102;
+            // 
+            // RepresentingLocal
+            // 
+            RepresentingLocal.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            RepresentingLocal.HeaderText = "Representing Local";
+            RepresentingLocal.Name = "RepresentingLocal";
+            RepresentingLocal.ReadOnly = true;
+            RepresentingLocal.Width = 121;
             // 
             // uploadTab
             // 
@@ -490,6 +588,18 @@
             adminTab.UseVisualStyleBackColor = true;
             adminTab.Click += adminTab_Click;
             // 
+            // mergeClubLnk
+            // 
+            mergeClubLnk.AutoSize = true;
+            mergeClubLnk.Font = new Font("Segoe UI", 12F);
+            mergeClubLnk.Location = new Point(17, 206);
+            mergeClubLnk.Name = "mergeClubLnk";
+            mergeClubLnk.Size = new Size(98, 21);
+            mergeClubLnk.TabIndex = 5;
+            mergeClubLnk.TabStop = true;
+            mergeClubLnk.Text = "Merge Clubs";
+            mergeClubLnk.LinkClicked += mergeClubLnk_LinkClicked;
+            // 
             // addUserKey
             // 
             addUserKey.AutoSize = true;
@@ -550,18 +660,6 @@
             editDiverLnk.Text = "Edit Diver";
             editDiverLnk.LinkClicked += editDiverLnk_LinkClicked;
             // 
-            // mergeClubLnk
-            // 
-            mergeClubLnk.AutoSize = true;
-            mergeClubLnk.Font = new Font("Segoe UI", 12F);
-            mergeClubLnk.Location = new Point(17, 206);
-            mergeClubLnk.Name = "mergeClubLnk";
-            mergeClubLnk.Size = new Size(98, 21);
-            mergeClubLnk.TabIndex = 5;
-            mergeClubLnk.TabStop = true;
-            mergeClubLnk.Text = "Merge Clubs";
-            mergeClubLnk.LinkClicked += mergeClubLnk_LinkClicked;
-            // 
             // Archiver
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -585,6 +683,9 @@
             clubsTab.PerformLayout();
             groupBox1.ResumeLayout(false);
             groupBox2.ResumeLayout(false);
+            nationsTab.ResumeLayout(false);
+            nationsTab.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)ArchiveNationsDataGrid).EndInit();
             uploadTab.ResumeLayout(false);
             uploadTab.PerformLayout();
             adminTab.ResumeLayout(false);
@@ -636,5 +737,14 @@
         private LinkLabel resetKeyLnk;
         private LinkLabel addUserKey;
         private LinkLabel mergeClubLnk;
+        private TabPage nationsTab;
+        private TextBox textBox1;
+        private Button assignNationsBtn;
+        private DataGridView ArchiveNationsDataGrid;
+        private DataGridViewTextBoxColumn DiverName;
+        private DataGridViewTextBoxColumn DiversClub;
+        private DataGridViewTextBoxColumn NationArchive;
+        private DataGridViewTextBoxColumn RepresentingLocal;
+        private Label label4;
     }
 }
