@@ -624,18 +624,6 @@ namespace MeetArchiver
                 ArchiveNationsDataGrid.Rows.Add(name, club, nationArchive, representingLocal);
             }
 
-            foreach (Diver diver in newDivers)
-            {
-                if (!String.IsNullOrWhiteSpace(diver.Nation))
-                {
-                    continue;
-                }
-                string name = diver.FullName;
-                string club = diver.Representing;
-                string nationArchive = diver.Nation;
-                string representingLocal = selectedDivers.Where(d => d.ID == diver.ID).ToList()[0].Representing;
-                ArchiveNationsDataGrid.Rows.Add(name, club, nationArchive, representingLocal);
-            }
         }
 
         private void assignNationsBtn_Click(object sender, EventArgs e)
@@ -648,16 +636,10 @@ namespace MeetArchiver
                     continue;
                 }
                 diver.Nation = selectedDivers.Where(d => d.ID == diver.ID).ToList()[0].Representing;
+                if(diver.RecordStatus != RecordStatus.New)
+                    diver.RecordStatus = RecordStatus.Updated; 
             }
 
-            foreach (Diver diver in newDivers)
-            {
-                if (!String.IsNullOrWhiteSpace(diver.Nation))
-                {
-                    continue;
-                }
-                diver.Nation = selectedDivers.Where(d => d.ID == diver.ID).ToList()[0].Representing;
-            }
             LoadNations(sender, e);
         }
     }
