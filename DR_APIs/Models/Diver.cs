@@ -155,6 +155,33 @@ namespace DR_APIs.Models
             return result;
         }
 
+
+        public static async Task<List<Diver>> GetDiverByNameAsync(string lastNamePart, CancellationToken cancellationToken = default)
+        {
+            var httpClientHandler = new HttpClientHandler();
+            httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true;
+
+            var baseUrl = Environment.GetEnvironmentVariable("API_BASE_URL") ?? "https://localhost:7034";
+            var requestUri = $"{baseUrl.TrimEnd('/')}/Divers/GetDiverByName?lastName={Uri.EscapeDataString(lastNamePart)}";
+
+
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            var json = JsonSerializer.Serialize(lastNamePart, jsonOptions);
+            using var client = new HttpClient(httpClientHandler);
+            using var response = await client.GetAsync(requestUri, cancellationToken).ConfigureAwait(false);
+            var responseJson = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+            if (string.IsNullOrWhiteSpace(responseJson)) return new List<Diver>();
+
+            var result = JsonSerializer.Deserialize<List<Diver>>(responseJson, jsonOptions);
+            return result ?? new List<Diver>();
+        }
+
+
+
         public static async Task<List<Diver>> CheckDiversAsync(List<Diver> divers, CancellationToken cancellationToken = default)
         {
             if (divers is null) throw new ArgumentNullException(nameof(divers));

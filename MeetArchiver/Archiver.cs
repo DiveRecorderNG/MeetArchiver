@@ -248,6 +248,16 @@ namespace MeetArchiver
             frm.ShowDialog();
             RebuildDiverLists(checkedDivers);
         }
+        private void newList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (newList.SelectedIndex == -1)
+                return;
+
+            var frm = new SearchDiver(newDivers[newList.SelectedIndex]);
+            frm.ShowDialog();
+            RebuildDiverLists(checkedDivers);
+        }
+
 
         private void CheckClubData(object sender, EventArgs e)
         {
@@ -636,11 +646,12 @@ namespace MeetArchiver
                     continue;
                 }
                 diver.Nation = selectedDivers.Where(d => d.ID == diver.ID).ToList()[0].Representing;
-                if(diver.RecordStatus != RecordStatus.New)
-                    diver.RecordStatus = RecordStatus.Updated; 
+                if (diver.RecordStatus != RecordStatus.New)
+                    diver.RecordStatus = RecordStatus.Updated;
             }
 
             LoadNations(sender, e);
         }
+
     }
 }

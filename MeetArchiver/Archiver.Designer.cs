@@ -226,6 +226,7 @@
             newList.Name = "newList";
             newList.Size = new Size(259, 439);
             newList.TabIndex = 3;
+            newList.SelectedIndexChanged += newList_SelectedIndexChanged;
             // 
             // typoList
             // 

@@ -28,7 +28,7 @@ namespace MeetArchiver
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
 
-            //System.Environment.SetEnvironmentVariable("API_BASE_URL", Properties.Settings.Default.DRServiceURL);
+            System.Environment.SetEnvironmentVariable("API_BASE_URL", Properties.Settings.Default.DRServiceURL);
 
             ApplicationConfiguration.Initialize();
             Application.Run(new Archiver());

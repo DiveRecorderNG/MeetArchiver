@@ -167,6 +167,52 @@ namespace DR_APIs.Controllers
             return Ok(divers);
         }
 
+
+        [HttpGet("GetDiverByName")]
+        public ActionResult<List<Diver>> GetDiverByName(string LastName)
+        {
+
+            bool needsClosing = false;
+            if (conn.State != ConnectionState.Open)
+            {
+                conn.Open();
+                needsClosing = true;
+            }
+
+            string sql = "SELECT * FROM ME_Divers WHERE LastName like @LastName ";
+
+            MySqlCommand cmd = new MySqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@LastName", LastName + "%");
+
+            DataTable dt = new DataTable();
+
+            var _da = new MySqlDataAdapter(cmd);
+            _da.Fill(dt);
+
+            List<Diver> divers = new List<Diver>();
+            foreach (DataRow row in dt.Rows)
+            {
+                Diver diver = new Diver();
+                diver.ArchiveID = Convert.ToInt32(row["DRef"]);
+                diver.FirstName = row["FirstName"].ToString();
+                diver.LastName = row["LastName"].ToString();
+                diver.Sex = row["Sex"].ToString();
+                diver.Born = Convert.ToInt32(row["Born"]);
+                diver.Representing = row["Representing"].ToString();
+                diver.TCode = row["TCode"].ToString();
+                diver.Nation = row["Nation"].ToString();
+                diver.RecordStatus = RecordStatus.PossibleMatch;
+                diver.PossibleMatches = new List<Diver>();
+                divers.Add(diver);
+            }
+
+                if (needsClosing)
+                    conn.Close();
+
+                return Ok(divers);
+        }
+
+
         [HttpPost("CheckDivers")] 
         public ActionResult<IEnumerable<Diver>> CheckDivers(List<Diver> divers)
         {
