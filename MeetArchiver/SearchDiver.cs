@@ -29,7 +29,7 @@ namespace MeetArchiver
 
         private void searchBtn_Click(object sender, EventArgs e)
         {
-
+            searchResultsLst.Items.Clear();
             var t = Diver.GetDiverByNameAsync(FamilyNameTxt.Text);
             t.Wait();
             searchedDivers = t.Result;
@@ -45,24 +45,26 @@ namespace MeetArchiver
         private void EditDiver_Load(object sender, EventArgs e)
         {
             suppliedDiverCtrl.EditedDiver = suppliedDiver;
+            FamilyNameTxt.Text = suppliedDiver.LastName.Substring(0,3);
+            searchBtn_Click(null, null);
         }
 
         private void updateBtn_Click(object sender, EventArgs e)
         {
             Diver diver = foundDiverCtrl.PopulateDiverFromControls();
-            diver.RecordStatus = RecordStatus.Updated;
 
-            try
-            {
-                var t = Diver.UpdateDiversAsync(new List<Diver> { diver }, Program.CurrentUser);
-                t.Wait();
-                this.Close();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error updating diver: " + ex.Message + "\nPlease try again.");
-                this.Close();
-            }
+            suppliedDiver.ArchiveID = diver.ArchiveID;
+            suppliedDiver.FirstName = diver.FirstName;
+            suppliedDiver.LastName = diver.LastName;
+            suppliedDiver.Sex = diver.Sex;
+            suppliedDiver.Born = diver.Born;
+            suppliedDiver.Representing = diver.Representing;
+            suppliedDiver.TCode = diver.TCode;
+            suppliedDiver.Nation = diver.Nation;
+            suppliedDiver.RecordStatus = RecordStatus.Valid;
+            suppliedDiver.PossibleMatches = new List<Diver>();
+
+
         }
 
         private void searchResultsLst_SelectedIndexChanged(object sender, EventArgs e)
