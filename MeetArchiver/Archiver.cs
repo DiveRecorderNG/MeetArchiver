@@ -428,6 +428,10 @@ namespace MeetArchiver
             }
 
             logTxtBox.AppendText("Creating new meet.\n");
+            selectedMeet.International = internationalChk.Checked;
+            if(selectedMeet.International)
+                logTxtBox.AppendText("Meet is international.\n");
+
             var t3 = Meet.AddMeetAsync(selectedMeet, Program.CurrentUser);
             t3.Wait();
             var newMeetRef = t3.Result;
@@ -660,6 +664,16 @@ namespace MeetArchiver
             {
                 tabControl1.SelectedTab = nationsTab;
             }
+        }
+
+        private void internationalChk_CheckedChanged(object sender, EventArgs e)
+        {
+
+            if (selectedMeet == null)
+                return;
+
+            selectedMeet.International = internationalChk.Checked;
+
         }
     }
 }

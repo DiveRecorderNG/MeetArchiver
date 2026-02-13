@@ -552,6 +552,7 @@
             internationalChk.TabIndex = 5;
             internationalChk.Text = "International Meet";
             internationalChk.UseVisualStyleBackColor = true;
+            internationalChk.CheckedChanged += internationalChk_CheckedChanged;
             // 
             // label3
             // 
