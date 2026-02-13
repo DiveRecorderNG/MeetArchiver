@@ -25,7 +25,7 @@ namespace DR_APIs.Controllers
         [HttpPost("AddDiveSheets")]
         public ActionResult<bool> AddDiveSheets([FromBody] List<DiveSheet> sheets)
         {
-
+            Console.WriteLine("Pocessing request to AddDiveSheets");
             string pw = Request.Headers["X-API-KEY"];
             string email = Request.Headers["X-API-ID"];
             var user = Helpers.GetUser(pw, email, conn);
