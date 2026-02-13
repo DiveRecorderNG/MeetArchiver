@@ -64,6 +64,8 @@ namespace MeetArchiver
             suppliedDiver.RecordStatus = RecordStatus.Valid;
             suppliedDiver.PossibleMatches = new List<Diver>();
 
+            this.Close();
+
 
         }
 

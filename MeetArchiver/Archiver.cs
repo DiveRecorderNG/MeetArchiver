@@ -223,18 +223,7 @@ namespace MeetArchiver
             if (mismatchedDivers.Count == 0)
             {
                 typoList.BackColor = SystemColors.Window;
-                var result = MessageBox.Show("All Mismatched divers are now resolved, would you like to move onto fixing representation errors", "Diver cleansing complete", MessageBoxButtons.YesNo);
-                if (result == DialogResult.Yes)
-                {
-                    if (!internationalChk.Checked)
-                    {
-                        tabControl1.SelectedTab = clubsTab;
-                    }
-                    else
-                    {
-                        tabControl1.SelectedTab = nationsTab;
-                    }
-                }
+                diversNextBtn.Enabled = true;
             }
 
         }
@@ -298,6 +287,7 @@ namespace MeetArchiver
                     {
                         tabControl1.SelectedTab = uploadTab;
                     }
+                    nextClubcBtn.Enabled = true;
                 }
             }
             else
@@ -633,6 +623,8 @@ namespace MeetArchiver
                 string representingLocal = selectedDivers.Where(d => d.ID == diver.ID).ToList()[0].Representing;
                 ArchiveNationsDataGrid.Rows.Add(name, club, nationArchive, representingLocal);
             }
+            if (ArchiveNationsDataGrid.Rows.Count == 0)
+                natiosNextBtn.Enabled = true;
 
         }
 
@@ -653,5 +645,21 @@ namespace MeetArchiver
             LoadNations(sender, e);
         }
 
+        private void natiosNextBtn_Click(object sender, EventArgs e)
+        {
+            tabControl1.SelectedTab = uploadTab;
+        }
+
+        private void diversNextBtn_Click(object sender, EventArgs e)
+        {
+            if (!internationalChk.Checked)
+            {
+                tabControl1.SelectedTab = clubsTab;
+            }
+            else
+            {
+                tabControl1.SelectedTab = nationsTab;
+            }
+        }
     }
 }

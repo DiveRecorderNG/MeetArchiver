@@ -93,7 +93,7 @@ namespace MeetArchiver.Controls
             diver.Born = (int)nudBorn.Value;
             diver.TCode = txtTCode.Text;
             diver.Coach = txtCoach.Text;
-            diver.Nation = "";
+            diver.Nation = txtNation.Text;
             diver.PossibleMatches = new List<Diver>();
             return diver;
 

@@ -35,6 +35,7 @@
             meetTab = new TabPage();
             meetsList = new ListBox();
             diversTab = new TabPage();
+            diversNextBtn = new Button();
             withdrawnLbl = new Label();
             newLbl = new Label();
             mismatchLbl = new Label();
@@ -57,6 +58,7 @@
             groupBox2 = new GroupBox();
             acceptSuggestionBtn = new Button();
             nationsTab = new TabPage();
+            natiosNextBtn = new Button();
             label4 = new Label();
             textBox1 = new TextBox();
             assignNationsBtn = new Button();
@@ -111,8 +113,8 @@
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(tabControl1);
-            splitContainer1.Size = new Size(1122, 602);
-            splitContainer1.SplitterDistance = 63;
+            splitContainer1.Size = new Size(1096, 623);
+            splitContainer1.SplitterDistance = 65;
             splitContainer1.TabIndex = 1;
             // 
             // InstructionLbl
@@ -123,7 +125,7 @@
             InstructionLbl.Location = new Point(0, 0);
             InstructionLbl.Multiline = true;
             InstructionLbl.Name = "InstructionLbl";
-            InstructionLbl.Size = new Size(1122, 63);
+            InstructionLbl.Size = new Size(1096, 65);
             InstructionLbl.TabIndex = 0;
             InstructionLbl.Text = "label2";
             // 
@@ -139,7 +141,7 @@
             tabControl1.Location = new Point(0, 0);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(1122, 535);
+            tabControl1.Size = new Size(1096, 554);
             tabControl1.TabIndex = 0;
             tabControl1.SelectedIndexChanged += tabControl1_SelectedIndexChanged;
             // 
@@ -149,7 +151,7 @@
             meetTab.Location = new Point(4, 24);
             meetTab.Name = "meetTab";
             meetTab.Padding = new Padding(3);
-            meetTab.Size = new Size(1114, 507);
+            meetTab.Size = new Size(1088, 526);
             meetTab.TabIndex = 0;
             meetTab.Text = "Meet";
             meetTab.UseVisualStyleBackColor = true;
@@ -166,6 +168,7 @@
             // 
             // diversTab
             // 
+            diversTab.Controls.Add(diversNextBtn);
             diversTab.Controls.Add(withdrawnLbl);
             diversTab.Controls.Add(newLbl);
             diversTab.Controls.Add(mismatchLbl);
@@ -177,10 +180,22 @@
             diversTab.Location = new Point(4, 24);
             diversTab.Name = "diversTab";
             diversTab.Padding = new Padding(3);
-            diversTab.Size = new Size(1114, 507);
+            diversTab.Size = new Size(1088, 526);
             diversTab.TabIndex = 1;
             diversTab.Text = "Divers";
             diversTab.UseVisualStyleBackColor = true;
+            // 
+            // diversNextBtn
+            // 
+            diversNextBtn.BackColor = Color.MediumSeaGreen;
+            diversNextBtn.Enabled = false;
+            diversNextBtn.Location = new Point(982, 485);
+            diversNextBtn.Name = "diversNextBtn";
+            diversNextBtn.Size = new Size(75, 23);
+            diversNextBtn.TabIndex = 8;
+            diversNextBtn.Text = "Next";
+            diversNextBtn.UseVisualStyleBackColor = false;
+            diversNextBtn.Click += diversNextBtn_Click;
             // 
             // withdrawnLbl
             // 
@@ -269,14 +284,15 @@
             clubsTab.Controls.Add(groupBox2);
             clubsTab.Location = new Point(4, 24);
             clubsTab.Name = "clubsTab";
-            clubsTab.Size = new Size(1114, 507);
+            clubsTab.Size = new Size(1088, 526);
             clubsTab.TabIndex = 2;
             clubsTab.Text = "Clubs";
             clubsTab.UseVisualStyleBackColor = true;
             // 
             // nextClubcBtn
             // 
-            nextClubcBtn.BackColor = Color.Transparent;
+            nextClubcBtn.BackColor = Color.MediumSeaGreen;
+            nextClubcBtn.Enabled = false;
             nextClubcBtn.Location = new Point(977, 411);
             nextClubcBtn.Name = "nextClubcBtn";
             nextClubcBtn.Size = new Size(75, 23);
@@ -391,6 +407,7 @@
             // 
             // nationsTab
             // 
+            nationsTab.Controls.Add(natiosNextBtn);
             nationsTab.Controls.Add(label4);
             nationsTab.Controls.Add(textBox1);
             nationsTab.Controls.Add(assignNationsBtn);
@@ -398,10 +415,22 @@
             nationsTab.Location = new Point(4, 24);
             nationsTab.Name = "nationsTab";
             nationsTab.Padding = new Padding(3);
-            nationsTab.Size = new Size(1114, 507);
+            nationsTab.Size = new Size(1088, 526);
             nationsTab.TabIndex = 5;
             nationsTab.Text = "Nations";
             nationsTab.UseVisualStyleBackColor = true;
+            // 
+            // natiosNextBtn
+            // 
+            natiosNextBtn.BackColor = Color.MediumSeaGreen;
+            natiosNextBtn.Enabled = false;
+            natiosNextBtn.Location = new Point(904, 459);
+            natiosNextBtn.Name = "natiosNextBtn";
+            natiosNextBtn.Size = new Size(75, 23);
+            natiosNextBtn.TabIndex = 8;
+            natiosNextBtn.Text = "Next";
+            natiosNextBtn.UseVisualStyleBackColor = false;
+            natiosNextBtn.Click += natiosNextBtn_Click;
             // 
             // label4
             // 
@@ -487,7 +516,7 @@
             uploadTab.Controls.Add(archiveBtn);
             uploadTab.Location = new Point(4, 24);
             uploadTab.Name = "uploadTab";
-            uploadTab.Size = new Size(1114, 507);
+            uploadTab.Size = new Size(1088, 526);
             uploadTab.TabIndex = 3;
             uploadTab.Text = "Upload";
             uploadTab.UseVisualStyleBackColor = true;
@@ -583,7 +612,7 @@
             adminTab.Controls.Add(editDiverLnk);
             adminTab.Location = new Point(4, 24);
             adminTab.Name = "adminTab";
-            adminTab.Size = new Size(1114, 507);
+            adminTab.Size = new Size(1088, 526);
             adminTab.TabIndex = 4;
             adminTab.Text = "Admin";
             adminTab.UseVisualStyleBackColor = true;
@@ -665,7 +694,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1122, 602);
+            ClientSize = new Size(1096, 623);
             Controls.Add(splitContainer1);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "Archiver";
@@ -747,5 +776,7 @@
         private DataGridViewTextBoxColumn NationArchive;
         private DataGridViewTextBoxColumn RepresentingLocal;
         private Label label4;
+        private Button diversNextBtn;
+        private Button natiosNextBtn;
     }
 }
