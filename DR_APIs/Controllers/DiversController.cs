@@ -39,7 +39,7 @@ namespace DR_APIs.Controllers
 
 
             MySqlCommand cmd = new MySqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@MRef",MRef);
+            cmd.Parameters.AddWithValue("@MRef", MRef);
 
 
             DataTable dt = new DataTable();
@@ -79,7 +79,7 @@ namespace DR_APIs.Controllers
             //t.Wait();
             //return null;
             //return StatusCode(401 , "Unauthorized access");
-        
+
 
             bool needsClosing = false;
             if (conn.State != ConnectionState.Open)
@@ -119,24 +119,27 @@ namespace DR_APIs.Controllers
                 divers.Add(diver);
             }
 
-            if(divers.Count == 1)
+            if (divers.Count == 1)
             {
                 if (needsClosing)
                     conn.Close();
-              
+
                 return Ok(divers);
             }
 
             // didnlt find a unique match, try soundex
             sql = "SELECT * FROM ME_Divers WHERE (soundex(@FirstName) = soundex(FirstName) " +
-                "AND soundex(LastName) = soundex(@LastName) " +
-                "AND Born>=(@Born-1) AND Born<=(@Born+1)) " +
-                "OR (LastName=@LastName AND Born=@Born AND Sex=@Sex) " +
-                "OR (LastName = @FirstName AND FirstName = @LastName AND Born=@Born);";
+     "AND soundex(LastName) = soundex(@LastName) " +
+          "AND Born>=(@Born-1) AND Born<=(@Born+1)) " +
+        "OR (LastName=@LastName AND Born=@Born AND Sex=@Sex) " +
+    "OR (LastName = @FirstName AND FirstName = @LastName AND Born=@Born) " +
+                "OR (LastName RLIKE  @LikeLastName AND FirstName RLIKE  @LikeFirstName AND Born=@Born);";
 
             cmd = new MySqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@FirstName", FirstName);
             cmd.Parameters.AddWithValue("@LastName", LastName);
+            cmd.Parameters.AddWithValue("@LikeFirstName",  FirstName + "($|[ -].*)");
+            cmd.Parameters.AddWithValue("@LikeLastName", LastName + "($|[ -].*)");
             cmd.Parameters.AddWithValue("@Born", Born);
             cmd.Parameters.AddWithValue("@Sex", Sex);
 
@@ -162,7 +165,7 @@ namespace DR_APIs.Controllers
                 divers.Add(diver);
             }
 
-            if(needsClosing)
+            if (needsClosing)
                 conn.Close();
             return Ok(divers);
         }
@@ -179,7 +182,7 @@ namespace DR_APIs.Controllers
                 needsClosing = true;
             }
 
-            string sql = "SELECT * FROM ME_Divers WHERE LastName like @LastName ";
+            string sql = "SELECT * FROM ME_Divers WHERE LastName like @LastName order by LastName asc";
 
             MySqlCommand cmd = new MySqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@LastName", LastName + "%");
@@ -206,29 +209,29 @@ namespace DR_APIs.Controllers
                 divers.Add(diver);
             }
 
-                if (needsClosing)
-                    conn.Close();
+            if (needsClosing)
+                conn.Close();
 
-                return Ok(divers);
+            return Ok(divers);
         }
 
 
-        [HttpPost("CheckDivers")] 
+        [HttpPost("CheckDivers")]
         public ActionResult<IEnumerable<Diver>> CheckDivers(List<Diver> divers)
         {
 
             conn.Open();
-            for (int i=0; i<divers.Count();i++)
+            for (int i = 0; i < divers.Count(); i++)
             {
                 var matches = (List<Diver>)((ObjectResult)GetDiver(divers[i].FirstName, divers[i].LastName, divers[i].Born ?? 0, divers[i].Sex).Result).Value;
 
-                if (matches.Count() == 1 && matches[0].RecordStatus== RecordStatus.Valid)
+                if (matches.Count() == 1 && matches[0].RecordStatus == RecordStatus.Valid)
                 {
                     int id = divers[i].ID; // copy local ID
                     divers[i] = matches[0];
                     divers[i].ID = id;  // restore local ID
                 }
-                else if(matches.Count() == 0)
+                else if (matches.Count() == 0)
                 {
                     divers[i].RecordStatus = RecordStatus.New;
                 }
@@ -403,7 +406,7 @@ namespace DR_APIs.Controllers
         [HttpPost("MergeDivers")]
         public ActionResult<bool> MergeDivers(List<Diver> divers)
         {
-            Diver survivor = divers[0]; 
+            Diver survivor = divers[0];
             Diver casualty = divers[1];
 
             string pw = Request.Headers["X-API-KEY"];
