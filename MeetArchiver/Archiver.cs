@@ -224,6 +224,7 @@ namespace MeetArchiver
             {
                 typoList.BackColor = SystemColors.Window;
                 diversNextBtn.Enabled = true;
+                diversNextBtn.BackColor = Color.MediumSeaGreen;
             }
 
         }
@@ -288,6 +289,7 @@ namespace MeetArchiver
                         tabControl1.SelectedTab = uploadTab;
                     }
                     nextClubcBtn.Enabled = true;
+                    nextClubcBtn.BackColor = Color.MediumSeaGreen;
                 }
             }
             else
@@ -628,7 +630,11 @@ namespace MeetArchiver
                 ArchiveNationsDataGrid.Rows.Add(name, club, nationArchive, representingLocal);
             }
             if (ArchiveNationsDataGrid.Rows.Count == 0)
+            {
                 natiosNextBtn.Enabled = true;
+                natiosNextBtn.BackColor = Color.MediumSeaGreen;
+            }
+
 
         }
 

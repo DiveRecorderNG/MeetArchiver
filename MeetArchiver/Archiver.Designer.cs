@@ -187,11 +187,11 @@
             // 
             // diversNextBtn
             // 
-            diversNextBtn.BackColor = Color.MediumSeaGreen;
+            diversNextBtn.BackColor = SystemColors.Control;
             diversNextBtn.Enabled = false;
-            diversNextBtn.Location = new Point(982, 485);
+            diversNextBtn.Location = new Point(982, 472);
             diversNextBtn.Name = "diversNextBtn";
-            diversNextBtn.Size = new Size(75, 23);
+            diversNextBtn.Size = new Size(75, 36);
             diversNextBtn.TabIndex = 8;
             diversNextBtn.Text = "Next";
             diversNextBtn.UseVisualStyleBackColor = false;
@@ -291,11 +291,11 @@
             // 
             // nextClubcBtn
             // 
-            nextClubcBtn.BackColor = Color.MediumSeaGreen;
+            nextClubcBtn.BackColor = SystemColors.Control;
             nextClubcBtn.Enabled = false;
-            nextClubcBtn.Location = new Point(977, 411);
+            nextClubcBtn.Location = new Point(977, 402);
             nextClubcBtn.Name = "nextClubcBtn";
-            nextClubcBtn.Size = new Size(75, 23);
+            nextClubcBtn.Size = new Size(75, 32);
             nextClubcBtn.TabIndex = 15;
             nextClubcBtn.Text = "Next";
             nextClubcBtn.UseVisualStyleBackColor = false;
@@ -422,11 +422,11 @@
             // 
             // natiosNextBtn
             // 
-            natiosNextBtn.BackColor = Color.MediumSeaGreen;
+            natiosNextBtn.BackColor = SystemColors.Control;
             natiosNextBtn.Enabled = false;
-            natiosNextBtn.Location = new Point(904, 459);
+            natiosNextBtn.Location = new Point(904, 457);
             natiosNextBtn.Name = "natiosNextBtn";
-            natiosNextBtn.Size = new Size(75, 23);
+            natiosNextBtn.Size = new Size(75, 31);
             natiosNextBtn.TabIndex = 8;
             natiosNextBtn.Text = "Next";
             natiosNextBtn.UseVisualStyleBackColor = false;
@@ -454,7 +454,7 @@
             // 
             assignNationsBtn.Location = new Point(715, 459);
             assignNationsBtn.Name = "assignNationsBtn";
-            assignNationsBtn.Size = new Size(75, 23);
+            assignNationsBtn.Size = new Size(75, 27);
             assignNationsBtn.TabIndex = 5;
             assignNationsBtn.Text = "Assign";
             assignNationsBtn.UseVisualStyleBackColor = true;
