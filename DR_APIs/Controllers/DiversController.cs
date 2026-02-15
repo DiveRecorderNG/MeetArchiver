@@ -138,6 +138,7 @@ namespace DR_APIs.Controllers
             cmd = new MySqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@FirstName", FirstName);
             cmd.Parameters.AddWithValue("@LastName", LastName);
+            // the next 2 deal with 2 names in the field,separated by either a space or a dash. its more specific than just a % on the end
             cmd.Parameters.AddWithValue("@LikeFirstName",  FirstName + "($|[ -].*)");
             cmd.Parameters.AddWithValue("@LikeLastName", LastName + "($|[ -].*)");
             cmd.Parameters.AddWithValue("@Born", Born);

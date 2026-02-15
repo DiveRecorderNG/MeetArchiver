@@ -29,23 +29,23 @@ namespace MeetArchiver
 
         private void searchBtn_Click(object sender, EventArgs e)
         {
-            searchResultsLst.Items.Clear();
+            searchDiverDGV.Rows.Clear();
             var t = Diver.GetDiverByNameAsync(FamilyNameTxt.Text);
             t.Wait();
             searchedDivers = t.Result;
 
             foreach (Diver d in searchedDivers)
             {
-                searchResultsLst.Items.Add(d.FullName + " - " + d.Born);
+                searchDiverDGV.Rows.Add( d.LastName, d.FirstName, d.Born );
             }
-
+            searchDiverDGV.ClearSelection();
 
         }
 
         private void EditDiver_Load(object sender, EventArgs e)
         {
             suppliedDiverCtrl.EditedDiver = suppliedDiver;
-            FamilyNameTxt.Text = suppliedDiver.LastName.Substring(0,3);
+            FamilyNameTxt.Text = suppliedDiver.LastName.Substring(0, 3);
             searchBtn_Click(null, null);
         }
 
@@ -69,11 +69,11 @@ namespace MeetArchiver
 
         }
 
-        private void searchResultsLst_SelectedIndexChanged(object sender, EventArgs e)
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (searchResultsLst.SelectedIndex >= 0 && searchResultsLst.SelectedIndex < searchedDivers.Count)
+            if (e.RowIndex != -1)
             {
-                foundDiverCtrl.EditedDiver = searchedDivers[searchResultsLst.SelectedIndex];
+                foundDiverCtrl.EditedDiver = searchedDivers[e.RowIndex];
             }
         }
     }

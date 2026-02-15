@@ -30,16 +30,21 @@
         {
             DR_APIs.Models.Diver diver1 = new DR_APIs.Models.Diver();
             DR_APIs.Models.Diver diver2 = new DR_APIs.Models.Diver();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SearchDiver));
             foundDiverCtrl = new MeetArchiver.Controls.DiverCtrl();
             searchBtn = new Button();
             upadteDiver = new Button();
             FamilyNameTxt = new TextBox();
             label1 = new Label();
-            searchResultsLst = new ListBox();
             suppliedDiverCtrl = new MeetArchiver.Controls.DiverCtrl();
             label2 = new Label();
             label3 = new Label();
+            searchDiverDGV = new DataGridView();
+            Lastname = new DataGridViewTextBoxColumn();
+            Firstname = new DataGridViewTextBoxColumn();
+            Born = new DataGridViewTextBoxColumn();
+            ((System.ComponentModel.ISupportInitialize)searchDiverDGV).BeginInit();
             SuspendLayout();
             // 
             // foundDiverCtrl
@@ -58,7 +63,7 @@
             diver1.Sex = null;
             diver1.TCode = null;
             foundDiverCtrl.EditedDiver = diver1;
-            foundDiverCtrl.Location = new Point(308, 47);
+            foundDiverCtrl.Location = new Point(352, 47);
             foundDiverCtrl.Name = "foundDiverCtrl";
             foundDiverCtrl.Readonly = false;
             foundDiverCtrl.Size = new Size(362, 239);
@@ -76,7 +81,7 @@
             // 
             // upadteDiver
             // 
-            upadteDiver.Location = new Point(951, 292);
+            upadteDiver.Location = new Point(995, 292);
             upadteDiver.Name = "upadteDiver";
             upadteDiver.Size = new Size(75, 23);
             upadteDiver.TabIndex = 2;
@@ -100,16 +105,6 @@
             label1.TabIndex = 4;
             label1.Text = "Family name";
             // 
-            // searchResultsLst
-            // 
-            searchResultsLst.FormattingEnabled = true;
-            searchResultsLst.ItemHeight = 15;
-            searchResultsLst.Location = new Point(14, 64);
-            searchResultsLst.Name = "searchResultsLst";
-            searchResultsLst.Size = new Size(288, 304);
-            searchResultsLst.TabIndex = 5;
-            searchResultsLst.SelectedIndexChanged += searchResultsLst_SelectedIndexChanged;
-            // 
             // suppliedDiverCtrl
             // 
             suppliedDiverCtrl.BackColor = SystemColors.Control;
@@ -126,7 +121,7 @@
             diver2.Sex = null;
             diver2.TCode = null;
             suppliedDiverCtrl.EditedDiver = diver2;
-            suppliedDiverCtrl.Location = new Point(689, 47);
+            suppliedDiverCtrl.Location = new Point(733, 47);
             suppliedDiverCtrl.Name = "suppliedDiverCtrl";
             suppliedDiverCtrl.Readonly = false;
             suppliedDiverCtrl.Size = new Size(362, 239);
@@ -135,7 +130,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(700, 28);
+            label2.Location = new Point(741, 31);
             label2.Name = "label2";
             label2.Size = new Size(65, 15);
             label2.TabIndex = 7;
@@ -144,21 +139,74 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(319, 31);
+            label3.Location = new Point(360, 31);
             label3.Name = "label3";
             label3.Size = new Size(77, 15);
             label3.TabIndex = 8;
             label3.Text = "Archive Diver";
             // 
+            // searchDiverDGV
+            // 
+            searchDiverDGV.AllowUserToAddRows = false;
+            searchDiverDGV.AllowUserToDeleteRows = false;
+            searchDiverDGV.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = SystemColors.Control;
+            dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Control;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            searchDiverDGV.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            searchDiverDGV.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            searchDiverDGV.Columns.AddRange(new DataGridViewColumn[] { Lastname, Firstname, Born });
+            searchDiverDGV.Location = new Point(12, 78);
+            searchDiverDGV.MultiSelect = false;
+            searchDiverDGV.Name = "searchDiverDGV";
+            searchDiverDGV.ReadOnly = true;
+            searchDiverDGV.RowHeadersVisible = false;
+            searchDiverDGV.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            searchDiverDGV.Size = new Size(327, 290);
+            searchDiverDGV.TabIndex = 9;
+            searchDiverDGV.CellContentClick += dataGridView1_CellContentClick;
+            searchDiverDGV.RowEnter += dataGridView1_CellContentClick;
+            // 
+            // Lastname
+            // 
+            Lastname.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            Lastname.FillWeight = 200F;
+            Lastname.HeaderText = "Last Name";
+            Lastname.Name = "Lastname";
+            Lastname.ReadOnly = true;
+            Lastname.SortMode = DataGridViewColumnSortMode.NotSortable;
+            Lastname.Width = 69;
+            // 
+            // Firstname
+            // 
+            Firstname.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            Firstname.HeaderText = "First Name";
+            Firstname.Name = "Firstname";
+            Firstname.ReadOnly = true;
+            Firstname.SortMode = DataGridViewColumnSortMode.NotSortable;
+            Firstname.Width = 70;
+            // 
+            // Born
+            // 
+            Born.HeaderText = "Born";
+            Born.Name = "Born";
+            Born.ReadOnly = true;
+            Born.SortMode = DataGridViewColumnSortMode.NotSortable;
+            // 
             // SearchDiver
             // 
+            AcceptButton = searchBtn;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1047, 380);
+            ClientSize = new Size(1127, 380);
+            Controls.Add(searchDiverDGV);
             Controls.Add(label3);
             Controls.Add(label2);
             Controls.Add(suppliedDiverCtrl);
-            Controls.Add(searchResultsLst);
             Controls.Add(label1);
             Controls.Add(FamilyNameTxt);
             Controls.Add(upadteDiver);
@@ -169,6 +217,7 @@
             Name = "SearchDiver";
             Text = "Search Diver";
             Load += EditDiver_Load;
+            ((System.ComponentModel.ISupportInitialize)searchDiverDGV).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -180,9 +229,12 @@
         private Button upadteDiver;
         private TextBox FamilyNameTxt;
         private Label label1;
-        private ListBox searchResultsLst;
         private Controls.DiverCtrl suppliedDiverCtrl;
         private Label label2;
         private Label label3;
+        private DataGridView searchDiverDGV;
+        private DataGridViewTextBoxColumn Lastname;
+        private DataGridViewTextBoxColumn Firstname;
+        private DataGridViewTextBoxColumn Born;
     }
 }
