@@ -159,17 +159,24 @@ namespace MeetArchiver
 
             List<Event> eventsToRemove = new List<Event>();
             // lets remove and events with no dives in the sheet
-            //foreach (var ev in selectedEvents)
-            //{
-            //    if (!diveSheets.Where(a => a.Event == ev.ERef).Any())
-            //    {
-            //        eventsToRemove.Add(ev);
-            //    }
-            //}
-            //foreach (Event er in eventsToRemove)
-            //{
-            //    selectedEvents.Remove(er);
-            //}
+            foreach (var ev in selectedEvents)
+            {
+                if (!diveSheets.Where(a => a.Event == ev.ERef).Any())
+                {
+                    eventsToRemove.Add(ev);
+                }
+            }
+
+            if (eventsToRemove.Count != 0)
+            {
+                String msgBoxTxt = "Removing these events as they have no associated results:\n\n";
+                foreach (Event er in eventsToRemove)
+                {
+                    selectedEvents.Remove(er);
+                    msgBoxTxt += er.ETitle + "\n";
+                }
+                MessageBox.Show(msgBoxTxt, "Removng events");
+            }
 
             WorkingForm.Show("Validating Divers... Please wait, this can take some time.");
             var t = Diver.CheckDiversAsync(selectedDivers);
