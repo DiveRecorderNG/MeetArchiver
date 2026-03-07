@@ -47,9 +47,12 @@ namespace MeetArchiver
                 var t2 = Meet.GetByDiverAsync((Int32)diverRes[0].ArchiveID);
                 t2.Wait();
                 var meets = t2.Result;
-                foreach (var m in meets)
+                if (meets != null)
                 {
-                    survivorMeets.Items.Add(m.ToString());
+                    foreach (var m in meets)
+                    {
+                        survivorMeets.Items.Add(m.ToString());
+                    }
                 }
 
             }
