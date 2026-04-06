@@ -117,8 +117,8 @@ VALUES
                 cmd.Parameters.AddWithValue("@J10", ds.J10.HasValue ? (object)ds.J10.Value : 0);
                 cmd.Parameters.AddWithValue("@J11", ds.J11.HasValue ? (object)ds.J11.Value : 0);
 
-                cmd.Parameters.AddWithValue("@JTot", ds.JTot.HasValue ? (object)ds.JTot.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@Points", ds.Points.HasValue ? (object)ds.Points.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@JTot", ds.JTot.HasValue ? (object)ds.JTot.Value : 0);
+                cmd.Parameters.AddWithValue("@Points", ds.Points.HasValue ? (object)ds.Points.Value : 0);
                 cmd.Parameters.AddWithValue("@CumPoints", ds.CumPoints.HasValue ? (object)ds.CumPoints.Value : DBNull.Value);
 
                 cmd.Parameters.AddWithValue("@Cat1", ds.Cat1.HasValue ? (ds.Cat1.Value ? 1 : 0) : DBNull.Value);
