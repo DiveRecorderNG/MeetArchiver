@@ -161,7 +161,7 @@ namespace MeetArchiver
             // lets remove and events with no dives in the sheet
             foreach (var ev in selectedEvents)
             {
-                if (!diveSheets.Where(a => a.Event == ev.ERef).Any())
+                if (!diveSheets.Where(a => a.Event == ev.ERef & a.Meet == ev.MeetRef).Any())
                 {
                     eventsToRemove.Add(ev);
                 }
