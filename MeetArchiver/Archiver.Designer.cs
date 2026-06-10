@@ -309,6 +309,7 @@
             newClubBtn.TabIndex = 14;
             newClubBtn.Text = "Create new Club";
             newClubBtn.UseVisualStyleBackColor = true;
+            newClubBtn.Click += newClubBtn_Click;
             // 
             // searchTxt
             // 

@@ -25,6 +25,7 @@ namespace MeetArchiver
 
         List<Club> checkedClubs = new List<Club>();
         List<Club> mismatchedClubs = new List<Club>();
+        List<Club> newClubs = new List<Club>();
 
 
         public Archiver()
@@ -276,6 +277,16 @@ namespace MeetArchiver
 
             mismatchedClubs = checkedClubs.Where(c => !c.Validated).ToList();
 
+            foreach(var club in newClubs)
+            {
+                var exists = mismatchedClubs.Where(c => c.Representing == club.Representing && c.TCode == club.TCode).ToList();
+                if (exists.Count > 0)
+                {
+                    mismatchedClubs.Remove(exists[0]);
+                }
+            }
+
+
             sugestedClubLst.Items.Clear();
             searchClubLst.Items.Clear();
 
@@ -307,6 +318,9 @@ namespace MeetArchiver
 
         private void mismatchedClubsLst_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (mismatchedClubsLst.SelectedIndex == -1)
+                return;
+
             // A quick search by club code is all we can do here
             var t = Club.FindClubAsync(mismatchedClubs[mismatchedClubsLst.SelectedIndex].TCode);
             t.Wait();
@@ -438,7 +452,7 @@ namespace MeetArchiver
 
             logTxtBox.AppendText("Creating new meet.\n");
             selectedMeet.International = internationalChk.Checked;
-            if(selectedMeet.International)
+            if (selectedMeet.International)
                 logTxtBox.AppendText("Meet is international.\n");
 
             var t3 = Meet.AddMeetAsync(selectedMeet, Program.CurrentUser);
@@ -687,6 +701,12 @@ namespace MeetArchiver
 
             selectedMeet.International = internationalChk.Checked;
 
+        }
+
+        private void newClubBtn_Click(object sender, EventArgs e)
+        {
+            newClubs.Add( mismatchedClubs[mismatchedClubsLst.SelectedIndex]);
+            CheckClubData(null, null);
         }
     }
 }

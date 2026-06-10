@@ -9,6 +9,7 @@
     <Title>Diver Recorder Archiver</Title>
     <Authors>DRTeam</Authors>
     <StartupObject>MeetArchiver.Program</StartupObject>
+    <ApplicationIcon>Externals\uploadtointernetcloudsymbol_79794.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,6 +21,12 @@
     <Compile Include="..\DR_APIs\Models\Meet.cs" Link="ModelsLinked\Meet.cs" />
     <Compile Include="..\DR_APIs\Models\User.cs" Link="ModelsLinked\User.cs" />
     <Compile Include="..\DR_APIs\PasswordHasher.cs" Link="PasswordHasher.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Externals\uploadtointernetcloudsymbol_79794.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
