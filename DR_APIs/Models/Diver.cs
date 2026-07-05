@@ -9,7 +9,7 @@ using System.Text.Json.Serialization;
 namespace DR_APIs.Models
 {
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum RecordStatus { Unassigned, Valid, PossibleMatch, New, Updated };
+    public enum RecordStatus { Unassigned, Valid, ClubMissmachOnly, PossibleMatch, New, Updated };
 
     public class Diver
     {

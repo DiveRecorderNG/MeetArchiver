@@ -30,7 +30,7 @@ namespace MeetArchiver
 
             
            
-            System.Environment.SetEnvironmentVariable("API_BASE_URL", Properties.Settings.Default.DRServiceURL);
+            //System.Environment.SetEnvironmentVariable("API_BASE_URL", Properties.Settings.Default.DRServiceURL);
 
             ApplicationConfiguration.Initialize();
             Application.Run(new Archiver());

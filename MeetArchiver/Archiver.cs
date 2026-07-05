@@ -142,7 +142,6 @@ namespace MeetArchiver
             // require a DiverB so this is a dummy entry 
             divers.RemoveAll(dv => dv.ID == 0);
 
-            tabControl1.SelectedTab = diversTab;
 
             selectedMeet = meets[meetsList.SelectedIndex];
             selectedEvents = events.Where(ev => ev.MeetRef == selectedMeet.MRef).ToList();
@@ -179,13 +178,6 @@ namespace MeetArchiver
                 MessageBox.Show(msgBoxTxt, "Removng events");
             }
 
-            WorkingForm.Show("Validating Divers... Please wait, this can take some time.");
-            var t = Diver.CheckDiversAsync(selectedDivers);
-            t.Wait();
-            checkedDivers = t.Result;
-            WorkingForm.Close();
-
-            RebuildDiverLists(checkedDivers);
 
             if (internationalChk.Checked)
             {
@@ -195,6 +187,9 @@ namespace MeetArchiver
             {
                 tabControl1.TabPages.Remove(nationsTab);
             }
+
+            tabControl1.SelectedTab = diversTab;
+
         }
 
         private void RebuildDiverLists(List<Diver> chekkedDivers)
@@ -277,7 +272,7 @@ namespace MeetArchiver
 
             mismatchedClubs = checkedClubs.Where(c => !c.Validated).ToList();
 
-            foreach(var club in newClubs)
+            foreach (var club in newClubs)
             {
                 var exists = mismatchedClubs.Where(c => c.Representing == club.Representing && c.TCode == club.TCode).ToList();
                 if (exists.Count > 0)
@@ -385,6 +380,17 @@ namespace MeetArchiver
             var mismatchedClub = mismatchedClubs[mismatchedClubsLst.SelectedIndex];
 
             var divesrToFix = checkedDivers.Where(dv => mismatchedClub.Representing == dv.Representing && mismatchedClub.TCode == dv.TCode).ToList();
+            foreach (var diver in divesrToFix)
+            {
+                diver.Representing = sugestedClubSelection.Representing;
+                diver.TCode = sugestedClubSelection.TCode;
+                // don't need to update record status here cos if a diver has been validated it can never apear
+                // on the list of invalid clubs so leave it all as it is and updates/new will happes as they shold
+
+            }
+
+            // do the original diver list as well so we can run the full check against the server
+            divesrToFix = selectedDivers.Where(dv => mismatchedClub.Representing == dv.Representing && mismatchedClub.TCode == dv.TCode).ToList();
             foreach (var diver in divesrToFix)
             {
                 diver.Representing = sugestedClubSelection.Representing;
@@ -560,6 +566,14 @@ namespace MeetArchiver
 
             if (tabControl1.SelectedTab == diversTab)
             {
+                WorkingForm.Show("Validating Divers... Please wait, this can take some time.");
+                var t = Diver.CheckDiversAsync(selectedDivers);
+                t.Wait();
+                checkedDivers = t.Result;
+                WorkingForm.Close();
+
+                RebuildDiverLists(checkedDivers);
+
                 InstructionLbl.Text = "Step 2: Review the list of Mismatched divers below. These divers are in the local dataset but are similar to divers found in the central database.\nClick diver to edit.";
             }
 
@@ -705,8 +719,12 @@ namespace MeetArchiver
 
         private void newClubBtn_Click(object sender, EventArgs e)
         {
-            newClubs.Add( mismatchedClubs[mismatchedClubsLst.SelectedIndex]);
+            newClubs.Add(mismatchedClubs[mismatchedClubsLst.SelectedIndex]);
             CheckClubData(null, null);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
         }
     }
 }

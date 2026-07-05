@@ -171,6 +171,108 @@ namespace DR_APIs.Controllers
             return Ok(divers);
         }
 
+        public ActionResult<List<Diver>> GetDiver(string FirstName, string LastName, int Born, string Sex, string TCode)
+        {
+
+            //Response.StatusCode = 500;
+            //var writer = new StreamWriter(Response.Body);
+            //var t =  writer.WriteAsync("Unauthorized access");
+            //t.Wait();
+            //return null;
+            //return StatusCode(401 , "Unauthorized access");
+
+
+            bool needsClosing = false;
+            if (conn.State != ConnectionState.Open)
+            {
+                conn.Open();
+                needsClosing = true;
+            }
+
+            string sql = "SELECT * FROM ME_Divers WHERE @FirstName = FirstName " +
+                "AND LastName = @LastName " +
+                "AND Born = @Born AND TCode = @TCode";
+
+            MySqlCommand cmd = new MySqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@FirstName", FirstName);
+            cmd.Parameters.AddWithValue("@LastName", LastName);
+            cmd.Parameters.AddWithValue("@Born", Born);
+            cmd.Parameters.AddWithValue("@TCode", TCode);
+
+            DataTable dt = new DataTable();
+
+            var _da = new MySqlDataAdapter(cmd);
+            _da.Fill(dt);
+
+            List<Diver> divers = new List<Diver>();
+            foreach (DataRow row in dt.Rows)
+            {
+                Diver diver = new Diver();
+                diver.ArchiveID = Convert.ToInt32(row["DRef"]);
+                diver.FirstName = row["FirstName"].ToString();
+                diver.LastName = row["LastName"].ToString();
+                diver.Sex = row["Sex"].ToString();
+                diver.Born = Convert.ToInt32(row["Born"]);
+                diver.Representing = row["Representing"].ToString();
+                diver.TCode = row["TCode"].ToString();
+                diver.Nation = row["Nation"].ToString();
+                diver.RecordStatus = RecordStatus.Valid;
+                diver.PossibleMatches = new List<Diver>();
+                divers.Add(diver);
+            }
+
+            if (divers.Count == 1)
+            {
+                if (needsClosing)
+                    conn.Close();
+
+                return Ok(divers);
+            }
+
+            // didnlt find a unique match, try soundex
+            sql = "SELECT * FROM ME_Divers WHERE (soundex(@FirstName) = soundex(FirstName) " +
+     "AND soundex(LastName) = soundex(@LastName) " +
+          "AND Born>=(@Born-1) AND Born<=(@Born+1)) " +
+        "OR (LastName=@LastName AND Born=@Born AND Sex=@Sex) " +
+    "OR (LastName = @FirstName AND FirstName = @LastName AND Born=@Born) " +
+                "OR (LastName RLIKE  @LikeLastName AND FirstName RLIKE  @LikeFirstName AND Born=@Born);";
+
+            cmd = new MySqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@FirstName", FirstName);
+            cmd.Parameters.AddWithValue("@LastName", LastName);
+            // the next 2 deal with 2 names in the field,separated by either a space or a dash. its more specific than just a % on the end
+            cmd.Parameters.AddWithValue("@LikeFirstName", FirstName + "($|[ -].*)");
+            cmd.Parameters.AddWithValue("@LikeLastName", LastName + "($|[ -].*)");
+            cmd.Parameters.AddWithValue("@Born", Born);
+            cmd.Parameters.AddWithValue("@Sex", Sex);
+
+            dt = new DataTable();
+
+            _da = new MySqlDataAdapter(cmd);
+            _da.Fill(dt);
+
+            divers = new List<Diver>();
+            foreach (DataRow row in dt.Rows)
+            {
+                Diver diver = new Diver();
+                diver.ArchiveID = Convert.ToInt32(row["DRef"]);
+                diver.FirstName = row["FirstName"].ToString();
+                diver.LastName = row["LastName"].ToString();
+                diver.Sex = row["Sex"].ToString();
+                diver.Born = Convert.ToInt32(row["Born"]);
+                diver.Representing = row["Representing"].ToString();
+                diver.TCode = row["TCode"].ToString();
+                diver.Nation = row["Nation"].ToString();
+                diver.RecordStatus = RecordStatus.PossibleMatch;
+                diver.PossibleMatches = new List<Diver>();
+                divers.Add(diver);
+            }
+
+            if (needsClosing)
+                conn.Close();
+            return Ok(divers);
+        }
+
 
         [HttpGet("GetDiverByName")]
         public ActionResult<List<Diver>> GetDiverByName(string LastName)
@@ -224,7 +326,7 @@ namespace DR_APIs.Controllers
             conn.Open();
             for (int i = 0; i < divers.Count(); i++)
             {
-                var matches = (List<Diver>)((ObjectResult)GetDiver(divers[i].FirstName, divers[i].LastName, divers[i].Born ?? 0, divers[i].Sex).Result).Value;
+                var matches = (List<Diver>)((ObjectResult)GetDiver(divers[i].FirstName, divers[i].LastName, divers[i].Born ?? 0, divers[i].Sex, divers[i].TCode).Result).Value;
 
                 if (matches.Count() == 1 && matches[0].RecordStatus == RecordStatus.Valid)
                 {
